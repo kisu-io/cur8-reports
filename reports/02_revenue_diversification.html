@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>CUR8 — Revenue Diversification & Risk Mitigation</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --wine:#8B0000; --wine-2:#A52A2A; --cream:#faf7f2; --ink:#1a1a1a;
+    --gold:#C9A961; --olive:#6B7B3A; --sage:#8B9D77; --slate:#3C4A52;
+    --green:#2E7D32; --amber:#F9A825; --red:#C62828;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--cream);color:var(--ink);line-height:1.55}
+  .nav{background:var(--wine);color:#fff;padding:14px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  .nav a{color:#fff;text-decoration:none;margin-left:18px;font-size:14px;opacity:.85}
+  .nav a:hover{opacity:1;text-decoration:underline}
+  .nav strong{font-size:16px;letter-spacing:1px}
+  .hero{background:linear-gradient(135deg,#8B0000 0%,#5C0000 100%);color:#fff;padding:60px 32px 70px}
+  .hero h1{font-size:42px;margin-bottom:8px;font-weight:700;letter-spacing:-.5px}
+  .hero p.sub{font-size:17px;opacity:.92;max-width:900px}
+  .hero .meta{margin-top:20px;font-size:13px;opacity:.75}
+  .container{max-width:1280px;margin:0 auto;padding:40px 32px}
+  h2{color:var(--wine);font-size:26px;margin:36px 0 14px;border-bottom:2px solid var(--wine);padding-bottom:8px}
+  h3{color:var(--slate);font-size:19px;margin:24px 0 10px}
+  h4{font-size:15px;margin:8px 0;color:var(--ink)}
+  p{margin-bottom:10px;font-size:14px}
+  .card{background:#fff;border-radius:10px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:18px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  @media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+  .kpi{background:#fff;padding:18px;border-left:4px solid var(--wine);border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .kpi .lbl{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px}
+  .kpi .val{font-size:24px;font-weight:700;color:var(--wine);margin:4px 0}
+  .kpi .desc{font-size:12px;color:#555}
+  table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  th{background:var(--wine);color:#fff;padding:11px 10px;text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
+  td{padding:10px;border-bottom:1px solid #eee;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:#fbf9f5}
+  .badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;letter-spacing:.3px}
+  .b-q{background:#E8F5E9;color:var(--green)}
+  .b-w{background:#FFF8E1;color:#B8860B}
+  .b-h{background:#FFEBEE;color:var(--red)}
+  .b-info{background:#E3F2FD;color:#1565C0}
+  .channel{background:#fff;border-radius:10px;padding:22px;margin-bottom:16px;border-top:4px solid var(--wine);box-shadow:0 3px 12px rgba(0,0,0,.06)}
+  .channel.ch2{border-top-color:var(--gold)}
+  .channel.ch3{border-top-color:var(--olive)}
+  .channel.ch4{border-top-color:var(--slate)}
+  .channel-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;flex-wrap:wrap;gap:10px}
+  .channel-head h3{margin:0;color:var(--wine)}
+  .channel.ch2 .channel-head h3{color:#8B6914}
+  .channel.ch3 .channel-head h3{color:var(--olive)}
+  .channel.ch4 .channel-head h3{color:var(--slate)}
+  .uplift{background:var(--cream);padding:6px 12px;border-radius:6px;font-size:12px;font-weight:700;color:var(--wine)}
+  .timeline{position:relative;padding:14px 0}
+  .tl-row{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:10px 0;border-bottom:1px dashed #ddd}
+  .tl-row:last-child{border-bottom:none}
+  .tl-month{font-weight:700;color:var(--wine);font-size:13px}
+  .tl-content{font-size:13px}
+  .chart-box{background:#fff;border-radius:10px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:18px}
+  .chart-box h3{margin-top:0}
+  .canvas-wrap{position:relative;height:340px}
+  .summary{background:linear-gradient(135deg,#8B0000 0%,#5C0000 100%);color:#fff;padding:28px;border-radius:10px;margin:22px 0}
+  .summary h2{color:#fff;border-bottom-color:rgba(255,255,255,.4)}
+  .summary ul{margin:12px 0 0 22px}
+  .summary li{margin-bottom:6px;font-size:14px}
+  .footer{text-align:center;color:#999;font-size:12px;padding:30px;border-top:1px solid #ddd;margin-top:40px}
+  .pill{display:inline-block;padding:4px 10px;border-radius:14px;font-size:11px;font-weight:600;background:var(--cream);color:var(--wine);border:1px solid var(--wine);margin-right:6px;margin-bottom:4px}
+  ul.clean{list-style:none;padding:0}
+  ul.clean li{padding:6px 0 6px 22px;position:relative;font-size:13px}
+  ul.clean li:before{content:"▸";position:absolute;left:0;color:var(--wine);font-weight:700}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <strong>CUR8 STRATEGIC REPORTS</strong>
+  <div>
+    <a href="index.html">Dashboard</a>
+    <a href="01_risk_analysis.html">01 · Risk Analysis</a>
+    <a href="02_revenue_diversification.html">02 · Revenue Diversification</a>
+    <a href="03_daypart_simulation.html">03 · Daypart Simulation</a>
+    <a href="04_hr_rampup_strategy.html">04 · HR Ramp-up</a>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>02 · Revenue Diversification & Risk Mitigation</h1>
+  <p class="sub">Chiến lược giảm thiểu rủi ro và mở rộng nguồn doanh thu — từ một venue F&B đơn thuần (12.3 tỷ Y1) sang multi-stream model có khả năng đạt 17–19 tỷ vào Y2 mà không cần tăng diện tích vật lý.</p>
+  <div class="meta">CUR8 · 49 Phạm Đăng Cảng · Phân tích thực hiện 18/04/2026</div>
+</div>
+
+<div class="container">
+
+<!-- ============== 1. RISK MITIGATION ============== -->
+<h2>1. Risk Mitigation Strategy — Từ Risk Map sang Action Plan</h2>
+<p>Báo cáo 01 đã định danh 8 rủi ro chính (4 đỏ, 4 vàng). Phần này gắn từng rủi ro với 1–2 hành động cụ thể, có owner, có deadline, và có expected impact lượng hoá (basis points trên EBITDA hoặc % uplift doanh thu).</p>
+
+<table>
+<thead><tr><th>#</th><th>Rủi ro</th><th>Mitigation Action</th><th>Owner</th><th>Timeline</th><th>Expected Impact</th></tr></thead>
+<tbody>
+<tr><td><strong>R1</strong></td><td>Labor cost 31% (vs benchmark 22–27%)</td><td>Phased hiring + cross-training, hold off 2 vị trí senior tới Tháng 9</td><td>HR + Ops Director</td><td>T6–T9/2026</td><td><span class="badge b-q">−400 bps EBITDA</span></td></tr>
+<tr><td><strong>R2</strong></td><td>Doanh thu plateau Y2 → Y5 (12.3 → 13.5 tỷ)</td><td>4-channel diversification roadmap (chi tiết §2)</td><td>GM + Marketing</td><td>T9/2026 → T12/2027</td><td><span class="badge b-q">+25–35% rev Y2</span></td></tr>
+<tr><td><strong>R3</strong></td><td>Tập trung doanh thu cuối tuần (60% rev / 2 ngày)</td><td>Weekday programming: Trivia Night, Vinyl Sunday, Coworking morning</td><td>Marketing + GM</td><td>T7/2026</td><td><span class="badge b-q">+15% weekday rev</span></td></tr>
+<tr><td><strong>R4</strong></td><td>Marketing 1% (vs benchmark 3–5%)</td><td>Tăng marketing budget lên 3% trong 6 tháng đầu, KOL+UGC focus</td><td>Marketing</td><td>T6/2026</td><td><span class="badge b-q">+20% awareness</span></td></tr>
+<tr><td><strong>R5</strong></td><td>Food cost 35% (đỉnh khung)</td><td>Menu engineering: bỏ 20% items doanh số thấp, push high-margin cocktails</td><td>F&B Manager</td><td>T8/2026</td><td><span class="badge b-q">−200 bps COGS</span></td></tr>
+<tr><td><strong>R6</strong></td><td>Capex buffer mỏng (2.96 tỷ vs khung 3.5 tỷ)</td><td>Lập contingency reserve 10% từ working capital, ưu tiên đặt cọc nhà cung cấp với điều khoản refund</td><td>CFO</td><td>T5/2026</td><td><span class="badge b-w">Risk reduction</span></td></tr>
+<tr><td><strong>R7</strong></td><td>Service charge 5% có thể không bao phủ tip</td><td>Re-design: 5% service + transparent tip jar; review sau 3 tháng</td><td>GM</td><td>T9/2026</td><td><span class="badge b-w">Staff retention</span></td></tr>
+<tr><td><strong>R8</strong></td><td>Licensing late-night & rooftop liability</td><td>Hoàn tất giấy phép trước soft-launch; mua liability insurance 5 tỷ</td><td>GM + Legal</td><td>T5/2026</td><td><span class="badge b-w">Compliance</span></td></tr>
+</tbody>
+</table>
+
+<div class="card" style="margin-top:18px;background:#FFF8E1;border-left:4px solid #B8860B">
+<h4 style="color:#B8860B">⚠ Cảnh báo điều phối</h4>
+<p>Nếu thực hiện cả 8 mitigation actions cùng lúc, sẽ tạo overload cho team mới. Đề xuất ưu tiên theo thứ tự: <strong>R8 → R6 → R1 → R4 → R2 → R3 → R5 → R7</strong>. Lý do: compliance & cash buffer phải được lock trước; HR phasing là blocker cho tất cả; marketing phải bật trước khi diversification có hiệu quả.</p>
+</div>
+
+<!-- ============== 2. REVENUE DIVERSIFICATION ============== -->
+<h2>2. Revenue Diversification Roadmap — 4 Kênh</h2>
+<p>Mục tiêu: Tăng doanh thu Y2 từ <strong>13.5 tỷ → 17–19 tỷ</strong> (+25–40%), giảm phụ thuộc vào F&B core (hiện ~100%) xuống <strong>~70%</strong>, và tăng EBITDA margin từ 19.8% lên <strong>24–27%</strong> nhờ các kênh có biên cao hơn.</p>
+
+<div class="grid-4">
+  <div class="kpi"><div class="lbl">Channel 1 — F&B Menu</div><div class="val">+12%</div><div class="desc">+1.5 tỷ rev/yr · Cocktail program & private dining</div></div>
+  <div class="kpi"><div class="lbl">Channel 2 — Event/Experience</div><div class="val">+15%</div><div class="desc">+1.8 tỷ rev/yr · Buyout, listening session, workshop</div></div>
+  <div class="kpi"><div class="lbl">Channel 3 — Retail/Merch</div><div class="val">+5%</div><div class="desc">+0.6 tỷ rev/yr · Vinyl, coffee bean, branded merch</div></div>
+  <div class="kpi"><div class="lbl">Channel 4 — B2B</div><div class="val">+8%</div><div class="desc">+1.0 tỷ rev/yr · Brand activation, content shoot, F&B catering</div></div>
+</div>
+
+<!-- Channel 1 -->
+<div class="channel">
+<div class="channel-head">
+  <h3>Channel 1 · F&B Menu Expansion (Cocktail Program & Private Dining)</h3>
+  <span class="uplift">Uplift: +1.5 tỷ/năm · Margin: 70–75%</span>
+</div>
+
+<div class="grid-2">
+<div>
+<h4>Sub-products</h4>
+<ul class="clean">
+<li><strong>Signature cocktail menu (12 items)</strong> — pricing 220–280k, food cost 18–22% (vs current drink cost 26%)</li>
+<li><strong>Wine list curated (rooftop only)</strong> — 30 chai, by-the-glass pricing 180–250k</li>
+<li><strong>Tasting menu Lầu 2</strong> — 5-course paired with cocktail, 850–1,100k/người, max 12 seats</li>
+<li><strong>Coffee program upgrade</strong> — single-origin, V60 + cold brew tower; ticket 80–120k vs hiện tại 60k</li>
+<li><strong>Late-night small bites</strong> — 18 SKU mới sau 22h, ticket 80–150k</li>
+</ul>
+</div>
+<div>
+<h4>Lý do làm</h4>
+<ul class="clean">
+<li>Drink margin (74%) > Food margin (65%) → shifting mix nâng GP 200 bps</li>
+<li>Lầu 2 hiện không có dinner anchor — tasting menu tận dụng 18:00–21:00 dead-zone</li>
+<li>Single-origin coffee tăng AOV sáng từ 60k → 95k mà không tăng cover cần thiết</li>
+<li>Late-night small bites cứu doanh thu 22:00–02:00 (hiện chỉ drink-led)</li>
+</ul>
+</div>
+</div>
+
+<table style="margin-top:14px">
+<thead><tr><th>Sub-product</th><th>Launch</th><th>Investment</th><th>Rev Y1 (T9-T12)</th><th>Rev Y2 (full)</th><th>Margin</th></tr></thead>
+<tbody>
+<tr><td>Signature cocktails</td><td>T9/2026</td><td>50M (training+bar tools)</td><td>180M</td><td>620M</td><td>75%</td></tr>
+<tr><td>Wine list rooftop</td><td>T10/2026</td><td>120M (initial inventory)</td><td>90M</td><td>380M</td><td>62%</td></tr>
+<tr><td>Tasting menu</td><td>T11/2026</td><td>30M (R&D)</td><td>120M</td><td>340M</td><td>58%</td></tr>
+<tr><td>Coffee upgrade</td><td>T7/2026</td><td>40M (equipment)</td><td>110M</td><td>180M</td><td>72%</td></tr>
+<tr><td>Late-night bites</td><td>T8/2026</td><td>20M (menu R&D)</td><td>60M</td><td>180M</td><td>65%</td></tr>
+<tr style="background:#fbf3f3"><td><strong>TOTAL</strong></td><td>—</td><td><strong>260M</strong></td><td><strong>560M</strong></td><td><strong>1,700M</strong></td><td><strong>~68%</strong></td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- Channel 2 -->
+<div class="channel ch2">
+<div class="channel-head">
+  <h3>Channel 2 · Experience & Event Revenue (Highest Uplift)</h3>
+  <span class="uplift">Uplift: +1.8 tỷ/năm · Margin: 65–80%</span>
+</div>
+
+<div class="grid-2">
+<div>
+<h4>Sub-products</h4>
+<ul class="clean">
+<li><strong>Full venue buyout</strong> — 35–55 triệu/đêm (Mon-Wed), incl. 50% F&B credit</li>
+<li><strong>Floor-level rental</strong> — Sound Lab 8M/3h, Rooftop 12M/3h, Lầu 2 dining 10M/3h</li>
+<li><strong>Listening Sessions / Vinyl Night</strong> — ticket 250k incl. 1 drink, 2x/tuần</li>
+<li><strong>Cocktail Masterclass</strong> — 800k/người, 8–12 người/lớp, T7–T9 weekday tối</li>
+<li><strong>Album launch / Brand party packages</strong> — 60–120M trọn gói</li>
+<li><strong>Coffee cupping mornings</strong> — 350k/người, Sun morning, 8 ng/buổi</li>
+</ul>
+</div>
+<div>
+<h4>Lý do làm</h4>
+<ul class="clean">
+<li>Sound Lab + Rooftop là 2 USP unique — buyout pricing có thể 2–3x F&B revenue cùng giờ</li>
+<li>Sài Gòn thiếu venue listening session quy mô vừa — niche demand chưa phục vụ</li>
+<li>Brand activation budget Q4 tại SG ~150 tỷ/năm — chỉ cần capture 0.5% là đủ 750M</li>
+<li>Event revenue có deposit 50% → cải thiện cash flow vs F&B walk-in</li>
+<li>Tăng utilization weekday từ 30% lên 55% mà không cần thêm headcount đáng kể</li>
+</ul>
+</div>
+</div>
+
+<table style="margin-top:14px">
+<thead><tr><th>Event Product</th><th>Launch</th><th>Sales Cycle</th><th>Y1 Sessions</th><th>Y2 Sessions</th><th>Y2 Rev</th></tr></thead>
+<tbody>
+<tr><td>Full buyout</td><td>T9/2026</td><td>30–45 ngày</td><td>4</td><td>14</td><td>560M</td></tr>
+<tr><td>Floor rental</td><td>T8/2026</td><td>14–21 ngày</td><td>12</td><td>42</td><td>420M</td></tr>
+<tr><td>Listening session</td><td>T7/2026</td><td>1 tuần</td><td>20</td><td>96</td><td>280M</td></tr>
+<tr><td>Masterclass</td><td>T8/2026</td><td>2 tuần</td><td>8</td><td>32</td><td>240M</td></tr>
+<tr><td>Album launch / brand party</td><td>T10/2026</td><td>45–60 ngày</td><td>3</td><td>10</td><td>420M</td></tr>
+<tr><td>Coffee cupping</td><td>T7/2026</td><td>1 tuần</td><td>16</td><td>52</td><td>140M</td></tr>
+<tr style="background:#fbf3f3"><td><strong>TOTAL</strong></td><td>—</td><td>—</td><td><strong>63</strong></td><td><strong>246</strong></td><td><strong>2,060M</strong></td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- Channel 3 -->
+<div class="channel ch3">
+<div class="channel-head">
+  <h3>Channel 3 · Retail & Merchandise (Brand IP Monetization)</h3>
+  <span class="uplift">Uplift: +0.6 tỷ/năm · Margin: 45–60%</span>
+</div>
+
+<div class="grid-2">
+<div>
+<h4>Sub-products</h4>
+<ul class="clean">
+<li><strong>Vinyl record curation</strong> — 80–150 SKU, retail 350–650k, exclusive listening preview tại Sound Lab</li>
+<li><strong>House coffee bean (250g)</strong> — 220k/bag, single-origin roasted weekly</li>
+<li><strong>Branded merch capsule</strong> — tote, T-shirt, ceramic cup, ghi chú "CUR8 vol.1"</li>
+<li><strong>Cocktail kit DIY</strong> — 3 cocktail/box, 380k, sold takeaway và online</li>
+<li><strong>Curated lifestyle objects</strong> — collab indie creators (candle, ceramic, art print)</li>
+</ul>
+</div>
+<div>
+<h4>Lý do làm</h4>
+<ul class="clean">
+<li>Khách F&B luôn có exit-point → merchandise convert 8–12% impulse buy</li>
+<li>Vinyl & coffee bean tạo recurring revenue (online + walk-in repeat)</li>
+<li>Brand storytelling: merch = walking billboard, giảm chi phí marketing</li>
+<li>Margin retail 50% > F&B 35% → mỗi đồng retail mạnh hơn 1.4x EBITDA</li>
+<li>Inventory turnover ~6–8 vòng/năm → tốc độ thu hồi vốn nhanh</li>
+</ul>
+</div>
+</div>
+
+<table style="margin-top:14px">
+<thead><tr><th>Retail Product</th><th>Launch</th><th>Initial Inv.</th><th>Y1 Units</th><th>Y2 Rev</th><th>Margin</th></tr></thead>
+<tbody>
+<tr><td>Vinyl curation</td><td>T9/2026</td><td>80M</td><td>150 đĩa</td><td>240M</td><td>40%</td></tr>
+<tr><td>House coffee bean</td><td>T7/2026</td><td>15M</td><td>180 bag</td><td>120M</td><td>55%</td></tr>
+<tr><td>Branded merch</td><td>T8/2026</td><td>40M</td><td>400 unit</td><td>140M</td><td>52%</td></tr>
+<tr><td>Cocktail kit DIY</td><td>T10/2026</td><td>20M</td><td>120 box</td><td>80M</td><td>50%</td></tr>
+<tr><td>Lifestyle objects</td><td>T11/2026</td><td>25M (consign)</td><td>—</td><td>60M</td><td>30%</td></tr>
+<tr style="background:#fbf3f3"><td><strong>TOTAL</strong></td><td>—</td><td><strong>180M</strong></td><td>—</td><td><strong>640M</strong></td><td><strong>~47%</strong></td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- Channel 4 -->
+<div class="channel ch4">
+<div class="channel-head">
+  <h3>Channel 4 · B2B / Partnership Revenue</h3>
+  <span class="uplift">Uplift: +1.0 tỷ/năm · Margin: 60–75%</span>
+</div>
+
+<div class="grid-2">
+<div>
+<h4>Sub-products</h4>
+<ul class="clean">
+<li><strong>Brand activation venue</strong> — fashion, audio brand, spirits — 80–250M/sự kiện</li>
+<li><strong>Content shoot rental</strong> — film, photo, MV (interior unique của Sound Lab + Rooftop)</li>
+<li><strong>F&B catering off-site</strong> — corporate end-year, gallery opening</li>
+<li><strong>Co-branded products</strong> — collab cà phê / spirit brand → license fee</li>
+<li><strong>Membership / Hospitality program</strong> — corporate clients (hotel concierge, lifestyle agency)</li>
+<li><strong>Whitelabel cocktail consulting</strong> — bar program cho hotels/restaurants</li>
+</ul>
+</div>
+<div>
+<h4>Lý do làm</h4>
+<ul class="clean">
+<li>B2B contract size > B2C ticket × 50–200 lần — efficient sales effort</li>
+<li>Content rental là pure incremental — chiếm 4h sáng (deadtime cho cafe)</li>
+<li>Catering tận dụng kitchen capacity dư khi venue half-full weekday</li>
+<li>Corporate membership → guaranteed minimum spend, dễ forecast cash flow</li>
+<li>Whitelabel consulting nâng brand authority, mở channel mới mà không cần capex</li>
+</ul>
+</div>
+</div>
+
+<table style="margin-top:14px">
+<thead><tr><th>B2B Product</th><th>Launch</th><th>Sales Lead Time</th><th>Y1 Deals</th><th>Y2 Deals</th><th>Y2 Rev</th></tr></thead>
+<tbody>
+<tr><td>Brand activation</td><td>T10/2026</td><td>60–90 ngày</td><td>3</td><td>10</td><td>1,200M</td></tr>
+<tr><td>Content shoot</td><td>T8/2026</td><td>14 ngày</td><td>10</td><td>32</td><td>240M</td></tr>
+<tr><td>Off-site catering</td><td>T11/2026</td><td>30 ngày</td><td>4</td><td>14</td><td>340M</td></tr>
+<tr><td>Co-branded products</td><td>T12/2026</td><td>90 ngày</td><td>1</td><td>3</td><td>180M</td></tr>
+<tr><td>Corporate membership</td><td>T9/2026</td><td>21 ngày</td><td>6</td><td>20</td><td>320M</td></tr>
+<tr><td>Whitelabel consulting</td><td>T1/2027</td><td>30 ngày</td><td>—</td><td>3</td><td>180M</td></tr>
+<tr style="background:#fbf3f3"><td><strong>TOTAL</strong></td><td>—</td><td>—</td><td><strong>24</strong></td><td><strong>82</strong></td><td><strong>2,460M</strong></td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============== 3. CHARTS ============== -->
+<h2>3. Tác động lên P&L — Visualisation</h2>
+<div class="grid-2">
+<div class="chart-box">
+<h3>Doanh thu mix · Base vs Diversified Y2</h3>
+<div class="canvas-wrap"><canvas id="mixChart"></canvas></div>
+</div>
+<div class="chart-box">
+<h3>Revenue trajectory 5 năm · So sánh kịch bản</h3>
+<div class="canvas-wrap"><canvas id="trendChart"></canvas></div>
+</div>
+</div>
+
+<div class="grid-2">
+<div class="chart-box">
+<h3>EBITDA margin theo kênh</h3>
+<div class="canvas-wrap"><canvas id="marginChart"></canvas></div>
+</div>
+<div class="chart-box">
+<h3>Investment vs Y2 Revenue (ROI proxy)</h3>
+<div class="canvas-wrap"><canvas id="roiChart"></canvas></div>
+</div>
+</div>
+
+<!-- ============== 4. TIMELINE ============== -->
+<h2>4. 12-Month Implementation Timeline</h2>
+<div class="card">
+<div class="timeline">
+<div class="tl-row"><div class="tl-month">T6/2026</div><div class="tl-content"><strong>Soft-launch Core F&B</strong> — chỉ menu base, không trigger diversification để tránh overload pre-stable. <span class="pill">Stabilize ops</span></div></div>
+<div class="tl-row"><div class="tl-month">T7/2026</div><div class="tl-content"><strong>Wave 1 — Quick wins</strong>: Coffee upgrade, Listening session, Coffee cupping, Content shoot rental (low investment, fast cash). <span class="pill">Channel 1</span><span class="pill">Channel 2</span><span class="pill">Channel 4</span></div></div>
+<div class="tl-row"><div class="tl-month">T8/2026</div><div class="tl-content"><strong>Wave 2 — Programs lock-in</strong>: Late-night bites, Floor rental, Branded merch, Cocktail masterclass. <span class="pill">All 4 channels</span></div></div>
+<div class="tl-row"><div class="tl-month">T9/2026</div><div class="tl-content"><strong>Wave 3 — Premium products</strong>: Signature cocktails, Vinyl curation, Full buyout pricing, Corporate membership launch. <span class="pill">Premium tier</span></div></div>
+<div class="tl-row"><div class="tl-month">T10/2026</div><div class="tl-content"><strong>Wave 4 — Brand & high-ticket</strong>: Wine list rooftop, Cocktail DIY kit, Brand activation pitches, Album launch packages. <span class="pill">Brand IP</span></div></div>
+<div class="tl-row"><div class="tl-month">T11/2026</div><div class="tl-content"><strong>Wave 5 — Premium experience</strong>: Tasting menu, Lifestyle objects retail, Off-site catering. <span class="pill">High-margin</span></div></div>
+<div class="tl-row"><div class="tl-month">T12/2026</div><div class="tl-content"><strong>Co-branded products</strong> ra mắt; review tổng kết Y1 và lock kế hoạch Y2. <span class="pill">Year-end review</span></div></div>
+<div class="tl-row"><div class="tl-month">T1–T3/2027</div><div class="tl-content"><strong>Whitelabel consulting</strong> launch (B2B-only, không tốn capex), tận dụng team lead có experience để tạo new revenue stream. <span class="pill">Scale-out</span></div></div>
+</div>
+</div>
+
+<!-- ============== 5. P&L IMPACT ============== -->
+<h2>5. P&L Impact Comparison</h2>
+<table>
+<thead><tr><th>Metric</th><th>Y2 Base (Finance Model)</th><th>Y2 Diversified</th><th>Δ</th><th>Impact</th></tr></thead>
+<tbody>
+<tr><td>Revenue (tỷ)</td><td>13.5</td><td>18.4</td><td>+4.9</td><td><span class="badge b-q">+36%</span></td></tr>
+<tr><td>Revenue F&B core</td><td>13.5 (100%)</td><td>13.5 (73%)</td><td>—</td><td><span class="badge b-info">Mix shift</span></td></tr>
+<tr><td>Revenue F&B premium</td><td>0</td><td>1.7 (9%)</td><td>+1.7</td><td><span class="badge b-q">+12% rev</span></td></tr>
+<tr><td>Revenue Event</td><td>0</td><td>2.06 (11%)</td><td>+2.06</td><td><span class="badge b-q">+15% rev</span></td></tr>
+<tr><td>Revenue Retail</td><td>0</td><td>0.64 (3%)</td><td>+0.64</td><td><span class="badge b-q">+5% rev</span></td></tr>
+<tr><td>Revenue B2B</td><td>0</td><td>2.46 (13%)</td><td>+2.46</td><td><span class="badge b-q">+18% rev</span></td></tr>
+<tr style="background:#fbf3f3"><td><strong>Blended GP%</strong></td><td>71%</td><td><strong>74%</strong></td><td>+300 bps</td><td><span class="badge b-q">Margin lift</span></td></tr>
+<tr><td>Labor cost (tỷ)</td><td>4.20 (31%)</td><td>4.65 (25%)</td><td>+0.45 absolute / −600 bps relative</td><td><span class="badge b-q">Operating leverage</span></td></tr>
+<tr><td>Marketing (tỷ)</td><td>0.135 (1%)</td><td>0.55 (3%)</td><td>+0.41</td><td><span class="badge b-w">Reinvest</span></td></tr>
+<tr style="background:#FFEBEE"><td><strong>EBITDA margin</strong></td><td><strong>19.8%</strong></td><td><strong>26.0%</strong></td><td><strong>+620 bps</strong></td><td><span class="badge b-q">Goal achieved</span></td></tr>
+<tr><td>EBITDA absolute (tỷ)</td><td>2.67</td><td>4.78</td><td>+2.11</td><td><span class="badge b-q">+79%</span></td></tr>
+</tbody>
+</table>
+
+<!-- ============== 6. RISK OF DIVERSIFICATION ============== -->
+<h2>6. Rủi ro của chính chiến lược diversification</h2>
+<div class="grid-2">
+<div class="card" style="border-left:4px solid var(--amber)">
+<h4 style="color:#B8860B">⚠ Operational stretch</h4>
+<p>Triển khai 4 kênh trong 6 tháng có thể overload team mới. <strong>Mitigation:</strong> Chia thành 5 waves (như §4), không cho phép wave mới khi wave trước chưa stable (≥4 tuần ổn định, NPS ≥ 7.5).</p>
+</div>
+<div class="card" style="border-left:4px solid var(--amber)">
+<h4 style="color:#B8860B">⚠ Brand dilution</h4>
+<p>Quá nhiều sản phẩm có thể làm loãng concept "music + cocktail + rooftop". <strong>Mitigation:</strong> Mọi sản phẩm phải pass "CUR8 brand filter" — kết nối với music, design, hoặc craft beverage.</p>
+</div>
+<div class="card" style="border-left:4px solid var(--amber)">
+<h4 style="color:#B8860B">⚠ Inventory risk (retail)</h4>
+<p>Vinyl & lifestyle objects có thể slow-moving. <strong>Mitigation:</strong> Consignment model 70% (creator giữ rủi ro), chỉ buy outright với coffee bean & merch core.</p>
+</div>
+<div class="card" style="border-left:4px solid var(--amber)">
+<h4 style="color:#B8860B">⚠ B2B sales cycle</h4>
+<p>Brand activation cần 60–90 ngày — khó hit Y1 target. <strong>Mitigation:</strong> Hire part-time Sales/Partnership từ T7 (3 tháng pre-launch), pipeline build trước khi cần đóng deal.</p>
+</div>
+</div>
+
+<!-- ============== SUMMARY ============== -->
+<div class="summary">
+<h2 style="border-color:rgba(255,255,255,.4)">Kết luận điều hành</h2>
+<ul>
+<li><strong>Diversification không phải optional — là cứu cánh.</strong> Finance model base case đã plateau ở 13.5 tỷ và EBITDA 19.8% — không đủ buffer để xử lý downside scenario của báo cáo 01.</li>
+<li><strong>Channel 2 (Event) và Channel 4 (B2B) là 2 driver chính</strong> — đóng góp 4.5/4.9 tỷ uplift; chỉ cần 60% hit-rate là đã +18% revenue Y2.</li>
+<li><strong>Tổng investment chỉ ~700M VND</strong> để mở 4 channel — payback < 8 tháng nếu hit 70% target. ROI mạnh hơn bất kỳ initiative nào trong base plan.</li>
+<li><strong>EBITDA target Y2 26%</strong> đưa CUR8 lên top quartile của benchmark Rooftop/Multi-concept (22–28%) — một flagship case cho investor pitch tương lai.</li>
+<li><strong>Sequencing kỷ luật</strong> là yếu tố thành công duy nhất — nếu chạy đồng thời 4 channel từ T6 sẽ thất bại do team overload và brand confusion.</li>
+</ul>
+</div>
+
+<div class="footer">CUR8 · Strategic Reports · 02 Revenue Diversification · Page 2/4</div>
+</div>
+
+<script>
+const wineColor = '#8B0000';
+const goldColor = '#C9A961';
+const oliveColor = '#6B7B3A';
+const slateColor = '#3C4A52';
+const sageColor = '#8B9D77';
+
+// Mix chart - donut
+new Chart(document.getElementById('mixChart'),{
+  type:'doughnut',
+  data:{
+    labels:['F&B Core','F&B Premium','Event','Retail','B2B'],
+    datasets:[
+      {label:'Base Y2', data:[13.5,0,0,0,0], backgroundColor:['#8B0000','#C9A961','#6B7B3A','#3C4A52','#8B9D77'], borderWidth:2,borderColor:'#fff'}
+    ]
+  },
+  options:{plugins:{legend:{position:'bottom'},title:{display:true,text:'Diversified Y2 (18.4 tỷ): F&B 73% / Event 11% / B2B 13% / Retail 3% / Premium 9%'}},responsive:true,maintainAspectRatio:false}
+});
+// override with diversified data
+new Chart(document.getElementById('mixChart').getContext('2d'),{
+  type:'doughnut',
+  data:{
+    labels:['F&B Core','F&B Premium','Event','Retail','B2B'],
+    datasets:[{data:[13.5,1.7,2.06,0.64,2.46], backgroundColor:[wineColor,goldColor,oliveColor,slateColor,sageColor], borderWidth:2,borderColor:'#fff'}]
+  },
+  options:{plugins:{legend:{position:'bottom'}},responsive:true,maintainAspectRatio:false}
+});
+
+// Trend chart
+new Chart(document.getElementById('trendChart'),{
+  type:'line',
+  data:{
+    labels:['Y1','Y2','Y3','Y4','Y5'],
+    datasets:[
+      {label:'Base Plan (Finance Model)',data:[12.3,13.5,13.6,13.5,13.4],borderColor:'#999',backgroundColor:'rgba(150,150,150,.1)',tension:.3,borderWidth:2},
+      {label:'Diversified Plan',data:[13.0,18.4,21.5,23.8,25.6],borderColor:wineColor,backgroundColor:'rgba(139,0,0,.1)',tension:.3,borderWidth:3}
+    ]
+  },
+  options:{plugins:{legend:{position:'bottom'}},responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'Revenue (tỷ VND)'}}}}
+});
+
+// Margin per channel
+new Chart(document.getElementById('marginChart'),{
+  type:'bar',
+  data:{
+    labels:['F&B Core','F&B Premium','Event','Retail','B2B','Blended Diversified'],
+    datasets:[{label:'Gross Margin %',data:[65,68,72,47,68,74],backgroundColor:[wineColor,goldColor,oliveColor,slateColor,sageColor,'#5C0000']}]
+  },
+  options:{plugins:{legend:{display:false}},responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'%'},max:90}}}
+});
+
+// ROI proxy
+new Chart(document.getElementById('roiChart'),{
+  type:'bar',
+  data:{
+    labels:['Ch1 F&B Premium','Ch2 Event','Ch3 Retail','Ch4 B2B'],
+    datasets:[
+      {label:'Investment (M VND)',data:[260,180,180,80],backgroundColor:'rgba(139,0,0,.6)',yAxisID:'y'},
+      {label:'Y2 Revenue (M VND)',data:[1700,2060,640,2460],backgroundColor:goldColor,yAxisID:'y'}
+    ]
+  },
+  options:{plugins:{legend:{position:'bottom'}},responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'Million VND'}}}}
+});
+</script>
+</body>
+</html>

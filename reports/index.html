@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>CUR8 Strategic Reports — Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --wine:#8B0000; --wine-2:#A52A2A; --cream:#faf7f2; --ink:#1a1a1a;
+    --gold:#C9A961; --olive:#6B7B3A; --sage:#8B9D77; --slate:#3C4A52;
+    --green:#2E7D32; --amber:#F9A825; --red:#C62828;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--cream);color:var(--ink);line-height:1.55}
+  .nav{background:var(--wine);color:#fff;padding:14px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  .nav a{color:#fff;text-decoration:none;margin-left:18px;font-size:14px;opacity:.85}
+  .nav a:hover{opacity:1;text-decoration:underline}
+  .nav strong{font-size:16px;letter-spacing:1px}
+  .hero{background:linear-gradient(135deg,#8B0000 0%,#5C0000 100%);color:#fff;padding:80px 32px 90px;text-align:center}
+  .hero .badge{display:inline-block;padding:5px 14px;border:1px solid rgba(255,255,255,.4);border-radius:14px;font-size:11px;letter-spacing:1px;margin-bottom:18px;text-transform:uppercase}
+  .hero h1{font-size:48px;margin-bottom:14px;font-weight:700;letter-spacing:-.5px}
+  .hero p.sub{font-size:18px;opacity:.92;max-width:760px;margin:0 auto}
+  .hero .meta{margin-top:22px;font-size:13px;opacity:.7}
+  .container{max-width:1280px;margin:0 auto;padding:50px 32px}
+  h2{color:var(--wine);font-size:26px;margin:36px 0 18px;border-bottom:2px solid var(--wine);padding-bottom:8px}
+  h3{color:var(--slate);font-size:19px;margin:18px 0 10px}
+  p{margin-bottom:10px;font-size:14px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:18px}
+  @media(max-width:900px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}}
+  .kpi{background:#fff;padding:18px;border-left:4px solid var(--wine);border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .kpi .lbl{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px}
+  .kpi .val{font-size:26px;font-weight:700;color:var(--wine);margin:4px 0}
+  .kpi .desc{font-size:12px;color:#555}
+  .report-card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 4px 16px rgba(0,0,0,.08);transition:transform .2s,box-shadow .2s;text-decoration:none;color:inherit;display:block}
+  .report-card:hover{transform:translateY(-4px);box-shadow:0 8px 24px rgba(0,0,0,.12)}
+  .report-card .head{padding:24px;color:#fff;background:linear-gradient(135deg,#8B0000 0%,#5C0000 100%)}
+  .report-card.r2 .head{background:linear-gradient(135deg,#C9A961 0%,#8B6914 100%)}
+  .report-card.r3 .head{background:linear-gradient(135deg,#6B7B3A 0%,#3F4D1F 100%)}
+  .report-card.r4 .head{background:linear-gradient(135deg,#3C4A52 0%,#1F2A30 100%)}
+  .report-card .num{font-size:11px;letter-spacing:2px;opacity:.75;margin-bottom:8px}
+  .report-card .title{font-size:20px;font-weight:700;margin-bottom:8px;line-height:1.3}
+  .report-card .sub{font-size:13px;opacity:.92}
+  .report-card .body{padding:18px 24px}
+  .report-card .body p{font-size:13px;color:#555;margin-bottom:10px}
+  .report-card .body ul{padding:0;list-style:none}
+  .report-card .body ul li{font-size:12px;color:#666;padding:3px 0 3px 18px;position:relative}
+  .report-card .body ul li:before{content:"•";position:absolute;left:6px;color:var(--wine);font-weight:700}
+  .report-card .cta{padding:12px 24px 18px;font-size:13px;color:var(--wine);font-weight:700}
+  .summary-box{background:#fff;border-radius:10px;padding:22px;margin-bottom:18px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .verdict{background:linear-gradient(135deg,#8B0000 0%,#5C0000 100%);color:#fff;padding:32px;border-radius:12px;margin:22px 0}
+  .verdict h2{color:#fff;border-bottom-color:rgba(255,255,255,.4)}
+  .verdict ul{margin:14px 0 0 22px}
+  .verdict li{margin-bottom:8px;font-size:15px}
+  .footer{text-align:center;color:#999;font-size:12px;padding:30px;border-top:1px solid #ddd;margin-top:40px}
+  .quick-stats{background:#fff;border-radius:12px;padding:24px;margin:20px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .badge-tag{display:inline-block;padding:4px 12px;border-radius:14px;font-size:11px;font-weight:700;background:var(--cream);color:var(--wine);border:1px solid var(--wine);margin-right:6px;margin-bottom:4px}
+  table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-top:12px}
+  th{background:var(--wine);color:#fff;padding:11px 10px;text-align:left;font-weight:600;font-size:12px}
+  td{padding:10px;border-bottom:1px solid #eee;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:#fbf9f5}
+  .b-q{background:#E8F5E9;color:var(--green);padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;display:inline-block}
+  .b-w{background:#FFF8E1;color:#B8860B;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;display:inline-block}
+  .b-h{background:#FFEBEE;color:var(--red);padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700;display:inline-block}
+  .chart-box{background:#fff;border-radius:10px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:18px}
+  .canvas-wrap{position:relative;height:340px}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <strong>CUR8 STRATEGIC REPORTS</strong>
+  <div>
+    <a href="index.html">Dashboard</a>
+    <a href="01_risk_analysis.html">01 · Risk Analysis</a>
+    <a href="02_revenue_diversification.html">02 · Revenue Diversification</a>
+    <a href="03_daypart_simulation.html">03 · Daypart Simulation</a>
+    <a href="04_hr_rampup_strategy.html">04 · HR Ramp-up</a>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="badge">Strategic Analysis · April 2026</div>
+  <h1>CUR8 — Master Dashboard</h1>
+  <p class="sub">Phân tích chiến lược toàn diện cho dự án rooftop multi-concept venue tại 49 Phạm Đăng Cảng. Bao gồm rủi ro tài chính, đa dạng hoá doanh thu, mô phỏng vận hành theo daypart, và chiến lược tuyển dụng theo phase.</p>
+  <div class="meta">Phân tích thực hiện 18/04/2026 · Dựa trên Business Plan + Finance Model + Bản vẽ kiến trúc</div>
+</div>
+
+<div class="container">
+
+<!-- ============== EXECUTIVE SUMMARY ============== -->
+<h2>Executive Summary</h2>
+<div class="grid-4">
+<div class="kpi"><div class="lbl">Critical Risks Identified</div><div class="val">8</div><div class="desc">4 đỏ + 4 vàng · ưu tiên Labor & Plateau</div></div>
+<div class="kpi"><div class="lbl">Revenue Uplift Potential</div><div class="val">+36%</div><div class="desc">Y2 từ 13.5 tỷ → 18.4 tỷ</div></div>
+<div class="kpi"><div class="lbl">EBITDA Improvement</div><div class="val">+620 bps</div><div class="desc">Y2 19.8% → 26%</div></div>
+<div class="kpi"><div class="lbl">HR Cash Saved (pre-opening)</div><div class="val">212M</div><div class="desc">VND · Phase-based hiring</div></div>
+</div>
+
+<div class="quick-stats" style="margin-top:18px">
+<h3>Top 5 Insights</h3>
+<table>
+<thead><tr><th>#</th><th>Insight</th><th>Severity</th><th>Action</th></tr></thead>
+<tbody>
+<tr><td>1</td><td>Labor cost 31% revenue — vượt khung benchmark 22–27% (4–9 bps over-budget)</td><td><span class="b-h">CRITICAL</span></td><td>Phase-based hiring + cross-training (báo cáo 04)</td></tr>
+<tr><td>2</td><td>Revenue plateau Y2–Y5: gần như flat 13.4–13.6 tỷ — không có growth engine</td><td><span class="b-h">CRITICAL</span></td><td>4-channel diversification roadmap (báo cáo 02)</td></tr>
+<tr><td>3</td><td>Doanh thu tập trung 60% vào 2 ngày cuối tuần — concentration risk cao</td><td><span class="b-h">CRITICAL</span></td><td>Weekday programming + Sound Lab utilization (báo cáo 03)</td></tr>
+<tr><td>4</td><td>Marketing budget 1% revenue — quá thấp so với benchmark 3–5%</td><td><span class="b-h">CRITICAL</span></td><td>Tăng marketing lên 3%, KOL+UGC focus (báo cáo 02)</td></tr>
+<tr><td>5</td><td>Capacity giả định 75 seats vs khảo sát kiến trúc 89 seats → buffer healthy</td><td><span class="b-q">OK</span></td><td>Không cần expand seat — invest demand-side (báo cáo 03)</td></tr>
+</tbody>
+</table>
+</div>
+
+<!-- ============== REPORT CARDS ============== -->
+<h2>4 Báo cáo chi tiết</h2>
+<div class="grid-2">
+
+<a href="01_risk_analysis.html" class="report-card">
+<div class="head">
+  <div class="num">REPORT 01</div>
+  <div class="title">Risk Analysis & Industry Benchmark</div>
+  <div class="sub">Phân tích 8 rủi ro chính, cross-check 12 chỉ số tài chính với benchmark Rooftop/Multi-concept venue</div>
+</div>
+<div class="body">
+<p>So sánh CUR8 với industry benchmark, định danh và xếp hạng rủi ro theo ma trận Severity × Likelihood, cùng stress-test scenarios (downside −25%, labor optimized, etc.).</p>
+<ul>
+<li>8 KPI cards vs benchmark</li>
+<li>Risk matrix bubble chart (8 rủi ro)</li>
+<li>Stress test với 5 scenarios</li>
+<li>Cross-check table 12 metrics</li>
+</ul>
+</div>
+<div class="cta">Xem báo cáo →</div>
+</a>
+
+<a href="02_revenue_diversification.html" class="report-card r2">
+<div class="head">
+  <div class="num">REPORT 02</div>
+  <div class="title">Revenue Diversification & Risk Mitigation</div>
+  <div class="sub">Chiến lược giảm rủi ro + roadmap 4 kênh doanh thu mới đưa Y2 từ 13.5 → 18.4 tỷ</div>
+</div>
+<div class="body">
+<p>Risk mitigation table với owner & timeline; 4 channel diversification (F&B Premium, Event, Retail, B2B) với uplift modeling per channel; 12-month implementation timeline 5 waves.</p>
+<ul>
+<li>4 kênh doanh thu mới (+4.9 tỷ Y2)</li>
+<li>P&L impact analysis chi tiết</li>
+<li>12-month implementation timeline</li>
+<li>EBITDA target 26% (top quartile)</li>
+</ul>
+</div>
+<div class="cta">Xem báo cáo →</div>
+</a>
+
+<a href="03_daypart_simulation.html" class="report-card r3">
+<div class="head">
+  <div class="num">REPORT 03</div>
+  <div class="title">Floor Layout & Daypart Simulation</div>
+  <div class="sub">Mô phỏng turn rate & cover theo từng tầng × từng khung giờ — cross-check với Finance Model</div>
+</div>
+<div class="body">
+<p>Phân tích 5 tầng × 5 daypart từ bản vẽ kiến trúc 260417_CUR8. Heatmap utilization, weekend lift analysis, weak-spot identification, opportunity map theo daypart.</p>
+<ul>
+<li>5 tầng × 5 daypart simulation</li>
+<li>Cross-check Finance Model assumption</li>
+<li>Weekend AOV reality check (240k)</li>
+<li>Weak-spot opportunity map</li>
+</ul>
+</div>
+<div class="cta">Xem báo cáo →</div>
+</a>
+
+<a href="04_hr_rampup_strategy.html" class="report-card r4">
+<div class="head">
+  <div class="num">REPORT 04</div>
+  <div class="title">HR Cost Reduction & Ramp-up Strategy</div>
+  <div class="sub">5-phase hiring plan đảm bảo opening quality nhưng không gánh full payroll từ ngày 1</div>
+</div>
+<div class="body">
+<p>5-phase ramp-up: Tier 0 (T-8 tuần) → Tier 1 (T-4) → Tier 2 (T-2) → Stable → Diversification. 4 lever HIGH priority đưa labor về khung benchmark 22–27%.</p>
+<ul>
+<li>5 phase hiring (T-8 tuần → T+8 tháng)</li>
+<li>Cash preservation 212M pre-opening</li>
+<li>4 lever HIGH priority = 610M/năm</li>
+<li>Probation + PT staffing model</li>
+</ul>
+</div>
+<div class="cta">Xem báo cáo →</div>
+</a>
+
+</div>
+
+<!-- ============== INTEGRATED OUTLOOK ============== -->
+<h2>Integrated Outlook — Combine all 3 Strategies</h2>
+<p>Khi áp dụng đồng thời 3 chiến lược (Diversification + Daypart Optimization + HR Ramp-up), kết quả tổng hợp như sau:</p>
+
+<div class="grid-2">
+<div class="chart-box">
+<h3>EBITDA margin trajectory</h3>
+<div class="canvas-wrap"><canvas id="ebitdaChart"></canvas></div>
+</div>
+<div class="chart-box">
+<h3>Revenue trajectory · 3 kịch bản</h3>
+<div class="canvas-wrap"><canvas id="revChart"></canvas></div>
+</div>
+</div>
+
+<table style="margin-top:18px">
+<thead><tr><th>Metric</th><th>Y1 Plan</th><th>Y2 Base</th><th>Y2 Diversified + Optimized</th><th>Δ vs Base</th></tr></thead>
+<tbody>
+<tr><td>Revenue (tỷ VND)</td><td>12.3</td><td>13.5</td><td>18.4</td><td><span class="b-q">+36%</span></td></tr>
+<tr><td>Labor % revenue</td><td>31%</td><td>31%</td><td>25%</td><td><span class="b-q">−600 bps</span></td></tr>
+<tr><td>Marketing % revenue</td><td>1%</td><td>1%</td><td>3%</td><td><span class="b-w">Reinvest</span></td></tr>
+<tr><td>Gross profit %</td><td>71%</td><td>71%</td><td>74%</td><td><span class="b-q">+300 bps</span></td></tr>
+<tr><td>EBITDA %</td><td>19.8%</td><td>19.8%</td><td>26%</td><td><span class="b-q">+620 bps</span></td></tr>
+<tr><td>EBITDA absolute (tỷ)</td><td>2.44</td><td>2.67</td><td>4.78</td><td><span class="b-q">+79%</span></td></tr>
+<tr><td>Headcount</td><td>22</td><td>22</td><td>21+3PT</td><td><span class="b-q">−1 FT, +flex</span></td></tr>
+<tr><td>Cash burn pre-opening</td><td>635M</td><td>—</td><td>423M</td><td><span class="b-q">−212M</span></td></tr>
+</tbody>
+</table>
+
+<!-- ============== FINAL VERDICT ============== -->
+<div class="verdict">
+<h2 style="border-color:rgba(255,255,255,.4)">Final Verdict</h2>
+<p style="font-size:15px;opacity:.95">CUR8 là một concept rất thuyết phục về mặt brand (rooftop + sound + cocktail) và vị trí (49 Phạm Đăng Cảng), nhưng business plan hiện tại có 3 weak point chí mạng cần xử lý trước khi opening:</p>
+<ul>
+<li><strong>Labor cost vượt khung 4–9 bps</strong> — phải áp dụng phased hiring + cross-training (báo cáo 04)</li>
+<li><strong>Doanh thu plateau từ Y2</strong> — phải lock 4-channel diversification roadmap (báo cáo 02)</li>
+<li><strong>Marketing under-funded ở mức không thể launch</strong> — tăng từ 1% → 3% trong 6 tháng đầu (báo cáo 02)</li>
+</ul>
+<p style="margin-top:14px;font-size:15px;opacity:.95">Nếu thực thi đúng 3 strategies trên (cộng với operational tuning từ daypart simulation báo cáo 03), CUR8 có khả năng đạt:</p>
+<ul>
+<li><strong>Revenue Y2: 18.4 tỷ</strong> (vs base 13.5 tỷ — +36%)</li>
+<li><strong>EBITDA margin Y2: 26%</strong> (vs base 19.8% — +620 bps · top quartile ngành)</li>
+<li><strong>Cash flow break-even: T9/2026</strong> (vs base T11/2026 — sớm 2 tháng)</li>
+<li><strong>Payback investment: 22 tháng</strong> (vs base 32 tháng — nhanh hơn 31%)</li>
+</ul>
+<p style="margin-top:14px;font-size:13px;opacity:.85;font-style:italic">Quan trọng nhất: tất cả các action đề xuất không yêu cầu thêm capex đáng kể — chỉ ~700M VND đầu tư diversification. Đây là leverage cực lớn so với 4.06 tỷ initial capital.</p>
+</div>
+
+<!-- ============== METHODOLOGY ============== -->
+<h2>Methodology & Sources</h2>
+<div class="summary-box">
+<h3>Data Sources</h3>
+<p>Phân tích dựa trên 3 tài liệu chính do team CUR8 cung cấp:</p>
+<ul style="list-style:none;padding:0">
+<li style="padding:6px 0 6px 22px;position:relative;font-size:13px"><strong style="color:var(--wine)">▸ Business Plan</strong> — CUR8_Business plan.xlsx (concept definition, team, timeline)</li>
+<li style="padding:6px 0 6px 22px;position:relative;font-size:13px"><strong style="color:var(--wine)">▸ Finance Model</strong> — 49 PĐC_Cur8_Finance Model.xlsx (P&L, capex, ramp-up curves, seasonality)</li>
+<li style="padding:6px 0 6px 22px;position:relative;font-size:13px"><strong style="color:var(--wine)">▸ Architectural Design</strong> — 260417_CUR8_DETAILS DESIGN.pdf (52 pages — floor plans, furniture, capacity)</li>
+</ul>
+</div>
+
+<div class="summary-box">
+<h3>Benchmark Reference</h3>
+<p>So sánh với <strong>Rooftop / Multi-concept Venue</strong> standard — segment có cocktail focus + view + multi-floor concept:</p>
+<table>
+<thead><tr><th>Metric</th><th>Benchmark Range</th><th>CUR8 Plan</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Food cost</td><td>28–35%</td><td>35%</td><td><span class="b-w">CAO</span></td></tr>
+<tr><td>Drink cost</td><td>20–28%</td><td>26%</td><td><span class="b-q">OK</span></td></tr>
+<tr><td>Labor cost</td><td>22–27%</td><td>31%</td><td><span class="b-h">VƯỢT</span></td></tr>
+<tr><td>Rent</td><td>6–10%</td><td>7.3%</td><td><span class="b-q">OK</span></td></tr>
+<tr><td>Marketing</td><td>3–5%</td><td>1%</td><td><span class="b-h">DƯỚI</span></td></tr>
+<tr><td>EBITDA margin</td><td>22–28%</td><td>19.8%</td><td><span class="b-w">DƯỚI</span></td></tr>
+<tr><td>Revenue / sqm / yr</td><td>70–110M</td><td>82M</td><td><span class="b-q">OK</span></td></tr>
+</tbody>
+</table>
+</div>
+
+<div class="summary-box">
+<h3>Approach</h3>
+<p>4 báo cáo được thiết kế để cross-validate lẫn nhau:</p>
+<ul style="list-style:none;padding:0">
+<li style="padding:6px 0 6px 22px;position:relative;font-size:13px"><strong style="color:var(--wine)">▸ Báo cáo 01</strong> định danh rủi ro → <strong>Báo cáo 02</strong> đề xuất mitigation cụ thể</li>
+<li style="padding:6px 0 6px 22px;position:relative;font-size:13px"><strong style="color:var(--wine)">▸ Báo cáo 03</strong> cross-check capacity assumption từ Finance Model với bản vẽ kiến trúc thực</li>
+<li style="padding:6px 0 6px 22px;position:relative;font-size:13px"><strong style="color:var(--wine)">▸ Báo cáo 04</strong> address top risk #1 (labor cost) từ báo cáo 01 với phased hiring strategy</li>
+<li style="padding:6px 0 6px 22px;position:relative;font-size:13px"><strong style="color:var(--wine)">▸ Tất cả</strong> sử dụng common assumption: 75 seats, ramp 6 tháng 50→100%, seasonality LNY −60% / NYE +20%</li>
+</ul>
+</div>
+
+<div class="footer">CUR8 Strategic Reports · Master Dashboard · Generated 18/04/2026<br>Brand color #8B0000 · Helvetica · Chart.js 4.4 · 49 Phạm Đăng Cảng</div>
+</div>
+
+<script>
+const wineColor = '#8B0000';
+const goldColor = '#C9A961';
+const oliveColor = '#6B7B3A';
+
+// EBITDA trajectory
+new Chart(document.getElementById('ebitdaChart'),{
+  type:'line',
+  data:{
+    labels:['Y1','Y2','Y3','Y4','Y5'],
+    datasets:[
+      {label:'Base Plan',data:[19.8,19.8,19.5,19.3,19.2],borderColor:'#999',borderDash:[5,5],borderWidth:2,tension:.3},
+      {label:'Diversified + Optimized',data:[20.5,26,28,29,30],borderColor:wineColor,backgroundColor:'rgba(139,0,0,.15)',borderWidth:3,tension:.3,fill:true},
+      {label:'Benchmark (top quartile 28%)',data:[28,28,28,28,28],borderColor:oliveColor,borderDash:[2,4],borderWidth:1.5,pointRadius:0}
+    ]
+  },
+  options:{plugins:{legend:{position:'bottom'}},responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'EBITDA %'},beginAtZero:true,max:35}}}
+});
+
+// Revenue trajectory
+new Chart(document.getElementById('revChart'),{
+  type:'line',
+  data:{
+    labels:['Y1','Y2','Y3','Y4','Y5'],
+    datasets:[
+      {label:'Downside (−25%)',data:[9.2,10.1,10.2,10.1,10.0],borderColor:'#C62828',borderWidth:2,tension:.3},
+      {label:'Base Plan',data:[12.3,13.5,13.6,13.5,13.4],borderColor:'#999',borderDash:[5,5],borderWidth:2,tension:.3},
+      {label:'Diversified + Optimized',data:[13.0,18.4,21.5,23.8,25.6],borderColor:wineColor,backgroundColor:'rgba(139,0,0,.15)',borderWidth:3,tension:.3,fill:true}
+    ]
+  },
+  options:{plugins:{legend:{position:'bottom'}},responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'Revenue (tỷ VND)'},beginAtZero:true}}}
+});
+</script>
+</body>
+</html>
