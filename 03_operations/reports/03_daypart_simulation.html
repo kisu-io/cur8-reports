@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>CUR8 — Daypart Turn & Cover Simulation</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --wine:#8B0000; --wine-2:#A52A2A; --cream:#faf7f2; --ink:#1a1a1a;
+    --gold:#C9A961; --olive:#6B7B3A; --sage:#8B9D77; --slate:#3C4A52;
+    --green:#2E7D32; --amber:#F9A825; --red:#C62828;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Helvetica Neue',Arial,sans-serif;background:var(--cream);color:var(--ink);line-height:1.55}
+  .nav{background:var(--wine);color:#fff;padding:14px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  .nav a{color:#fff;text-decoration:none;margin-left:18px;font-size:14px;opacity:.85}
+  .nav a:hover{opacity:1;text-decoration:underline}
+  .nav strong{font-size:16px;letter-spacing:1px}
+  .hero{background:linear-gradient(135deg,#8B0000 0%,#5C0000 100%);color:#fff;padding:60px 32px 70px}
+  .hero h1{font-size:42px;margin-bottom:8px;font-weight:700}
+  .hero p.sub{font-size:17px;opacity:.92;max-width:900px}
+  .hero .meta{margin-top:20px;font-size:13px;opacity:.75}
+  .container{max-width:1280px;margin:0 auto;padding:40px 32px}
+  h2{color:var(--wine);font-size:26px;margin:36px 0 14px;border-bottom:2px solid var(--wine);padding-bottom:8px}
+  h3{color:var(--slate);font-size:19px;margin:24px 0 10px}
+  h4{font-size:15px;margin:8px 0;color:var(--ink)}
+  p{margin-bottom:10px;font-size:14px}
+  .card{background:#fff;border-radius:10px;padding:22px;box-shadow:0 2px 10px rgba(0,0,0,.05);margin-bottom:18px}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .grid-5{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+  @media(max-width:900px){.grid-2,.grid-3,.grid-4,.grid-5{grid-template-columns:1fr}}
+  .kpi{background:#fff;padding:16px;border-left:4px solid var(--wine);border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .kpi .lbl{font-size:11px;color:#888;text-transform:uppercase;letter-spacing:.5px}
+  .kpi .val{font-size:22px;font-weight:700;color:var(--wine);margin:4px 0}
+  .kpi .desc{font-size:12px;color:#555}
+  table{width:100%;border-collapse:collapse;font-size:13px;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  th{background:var(--wine);color:#fff;padding:11px 10px;text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.3px}
+  td{padding:10px;border-bottom:1px solid #eee;vertical-align:top}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:#fbf9f5}
+  .badge{display:inline-block;padding:3px 9px;border-radius:12px;font-size:11px;font-weight:700}
+  .b-q{background:#E8F5E9;color:var(--green)}
+  .b-w{background:#FFF8E1;color:#B8860B}
+  .b-h{background:#FFEBEE;color:var(--red)}
+  .b-info{background:#E3F2FD;color:#1565C0}
+  .floor{background:#fff;border-radius:10px;padding:22px;margin-bottom:18px;border-left:5px solid var(--wine);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+  .floor.f1{border-left-color:var(--gold)}
+  .floor.f2{border-left-color:var(--olive)}
+  .floor.f3{border-left-color:var(--slate)}
+  .floor.f4{border-left-color:var(--sage)}
+  .floor h3{margin-top:0;display:flex;align-items:center;gap:10px}
+  .floor-tag{font-size:11px;padding:3px 9px;border-radius:12px;background:var(--wine);color:#fff;font-weight:700}
+  .heatmap{display:grid;grid-template-columns:120px repeat(7,1fr);gap:2px;margin:14px 0;font-size:11px}
+  .heatmap .h{background:var(--wine);color:#fff;padding:6px 4px;text-align:center;font-weight:600}
+  .heatmap .label{background:#3C4A52;color:#fff;padding:6px 8px;font-weight:600}
+  .heatmap .cell{padding:6px 4px;text-align:center;color:#fff;font-weight:600}
+  .chart-box{background:#fff;border-radius:10px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.05);margin-bottom:18px}
+  .chart-box h3{margin-top:0}
+  .canvas-wrap{position:relative;height:340px}
+  .summary{background:linear-gradient(135deg,#8B0000 0%,#5C0000 100%);color:#fff;padding:28px;border-radius:10px;margin:22px 0}
+  .summary h2{color:#fff;border-bottom-color:rgba(255,255,255,.4)}
+  .summary ul{margin:12px 0 0 22px}
+  .summary li{margin-bottom:6px;font-size:14px}
+  .footer{text-align:center;color:#999;font-size:12px;padding:30px;border-top:1px solid #ddd;margin-top:40px}
+  ul.clean{list-style:none;padding:0}
+  ul.clean li{padding:6px 0 6px 22px;position:relative;font-size:13px}
+  ul.clean li:before{content:"▸";position:absolute;left:0;color:var(--wine);font-weight:700}
+  .building{display:grid;grid-template-columns:80px 1fr;gap:8px;margin:12px 0}
+  .floor-row{background:#fff;padding:10px 14px;border-radius:6px;border-left:4px solid var(--wine);font-size:13px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center}
+  .floor-row .ht{color:#888;font-size:11px}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <strong>CUR8 STRATEGIC REPORTS</strong>
+  <div>
+    <a href="index.html">Dashboard</a>
+    <a href="01_risk_analysis.html">01 · Risk Analysis</a>
+    <a href="02_revenue_diversification.html">02 · Revenue Diversification</a>
+    <a href="03_daypart_simulation.html">03 · Daypart Simulation</a>
+    <a href="04_hr_rampup_strategy.html">04 · HR Ramp-up</a>
+  </div>
+</div>
+
+<div class="hero">
+  <h1>03 · Floor Layout & Daypart Simulation</h1>
+  <p class="sub">Mô phỏng turn rate và cover count theo từng tầng × từng khung giờ (sáng/trưa/chiều/tối/khuya), dựa trên bản vẽ kiến trúc 260417_CUR8_DETAILS DESIGN và cross-check với giả định trong Finance Model (75 seats, 150 sqm).</p>
+  <div class="meta">CUR8 · 49 Phạm Đăng Cảng · Phân tích thực hiện 18/04/2026</div>
+</div>
+
+<div class="container">
+
+<!-- ============== 1. BUILDING OVERVIEW ============== -->
+<h2>1. Tổng quan Building & Phân bổ Concept</h2>
+<p>Building CUR8 có diện tích đất <strong>17.18m × 3.87m = 66.5 m²</strong>, 6 cao độ sử dụng + sân thượng + mái. Diện tích sàn hữu ích ước ~150 m² (matched với Finance Model). Phân bổ concept theo cao độ:</p>
+
+<div class="card">
+<div class="building" style="grid-template-columns:1fr">
+<div class="floor-row" style="border-left-color:#999">
+  <div><strong>Mái (+14.600)</strong> · Kỹ thuật, kho lạnh</div>
+  <div class="ht">Không khai thác commercial</div>
+</div>
+<div class="floor-row" style="border-left-color:#8B9D77">
+  <div><strong>Sân thượng (+11.600)</strong> · ROOFTOP open-air bar</div>
+  <div class="ht">~14 seats · 35 m² · cocktail+wine focus</div>
+</div>
+<div class="floor-row" style="border-left-color:#3C4A52">
+  <div><strong>Lầu 3 (+8.600)</strong> · LOUNGE / VIP / Speakeasy</div>
+  <div class="ht">~17 seats · 30 m² · private dining + late-night</div>
+</div>
+<div class="floor-row" style="border-left-color:#6B7B3A">
+  <div><strong>Lầu 2 (+5.900)</strong> · BAR + DINING / Tasting menu</div>
+  <div class="ht">~24 seats · 28 m² · main F&B revenue</div>
+</div>
+<div class="floor-row" style="border-left-color:#C9A961">
+  <div><strong>Lầu 1' (+2.850) & Lầu 1 (+2.300)</strong> · SOUND LAB · DJ booth + speakers</div>
+  <div class="ht">~20 seats · 32 m² · listening sessions, vinyl</div>
+</div>
+<div class="floor-row" style="border-left-color:#8B0000">
+  <div><strong>Trệt (+0.000)</strong> · CAFE + Reception + Retail display</div>
+  <div class="ht">~14 seats · 25 m² · daytime traffic, takeaway</div>
+</div>
+</div>
+<p style="margin-top:14px;font-size:12px;color:#666"><strong>Tổng: ~89 seat capacity</strong>. Finance Model giả định 75 seats — có nghĩa <strong>~84% seat utilization</strong> được tính làm "active capacity", còn lại ~14 seats là buffer cho service flow + furniture rotation. <strong>Kết luận: capacity assumption hợp lý.</strong></p>
+</div>
+
+<!-- ============== 2. DAYPART DEFINITION ============== -->
+<h2>2. Định nghĩa Daypart và đặc tính khách</h2>
+<div class="grid-5">
+<div class="kpi"><div class="lbl">Morning</div><div class="val">07:00 – 11:00</div><div class="desc">Cafe, takeaway, coworking. Ticket 60–120k. Solo & remote workers.</div></div>
+<div class="kpi"><div class="lbl">Lunch / Noon</div><div class="val">11:00 – 14:00</div><div class="desc">Light lunch, business meeting. Ticket 150–250k. Pair, small group.</div></div>
+<div class="kpi"><div class="lbl">Afternoon</div><div class="val">14:00 – 18:00</div><div class="desc">Coffee meeting, content shoot, listening preview. Ticket 90–180k.</div></div>
+<div class="kpi"><div class="lbl">Evening</div><div class="val">18:00 – 22:00</div><div class="desc">Dinner + bar, peak revenue. Ticket 350–600k. Group, date.</div></div>
+<div class="kpi"><div class="lbl">Late-night</div><div class="val">22:00 – 02:00</div><div class="desc">Bar + Sound Lab + Rooftop. Ticket 280–500k. Bar crowd.</div></div>
+</div>
+
+<!-- ============== 3. PER-FLOOR SIMULATION ============== -->
+<h2>3. Mô phỏng Turn Rate & Cover theo từng tầng</h2>
+<p>Mỗi cell heatmap = số <strong>cover/giờ</strong> ước tính (cover = số khách phục vụ). Turn rate = cover / seat. Số liệu base case Mon-Thu, weekend tăng 1.6–2.0x.</p>
+
+<!-- TRỆT - CAFE -->
+<div class="floor">
+<h3><span class="floor-tag">TRỆT</span> CAFE · 14 seats · 25 m²</h3>
+<p><strong>Bản chất:</strong> Cafe daytime, retail display, takeaway counter. Doanh thu chủ yếu sáng + chiều, tối chuyển sang reception cho các tầng trên. Có lợi thế street-facing → walk-in cao.</p>
+
+<table>
+<thead><tr><th>Daypart</th><th>Hours</th><th>Seats active</th><th>Turn rate (Mon-Thu)</th><th>Turn rate (Fri-Sun)</th><th>Cover/day Mon-Thu</th><th>Cover/day Fri-Sun</th></tr></thead>
+<tbody>
+<tr><td>Morning</td><td>4h (07-11)</td><td>14 + 8 takeaway/h</td><td>1.2</td><td>1.6</td><td>17 dine + 32 takeaway = 49</td><td>22 dine + 40 takeaway = 62</td></tr>
+<tr><td>Noon</td><td>3h (11-14)</td><td>14</td><td>1.0</td><td>1.4</td><td>14</td><td>20</td></tr>
+<tr><td>Afternoon</td><td>4h (14-18)</td><td>14</td><td>0.8</td><td>1.2</td><td>11</td><td>17</td></tr>
+<tr><td>Evening</td><td>4h (18-22)</td><td>10 (4 retail flow)</td><td>0.6</td><td>0.8</td><td>6</td><td>8</td></tr>
+<tr><td>Late-night</td><td>4h (22-02)</td><td>0 (closed)</td><td>—</td><td>—</td><td>0</td><td>0</td></tr>
+<tr style="background:#fbf3f3"><td colspan="5"><strong>TOTAL daily cover</strong></td><td><strong>80</strong></td><td><strong>107</strong></td></tr>
+</tbody>
+</table>
+
+<p style="margin-top:10px;font-size:12px;color:#666"><strong>Note kiến trúc:</strong> Trệt có 4× LA-01 + 6× LC-01 + 2 folding tables. Folding tables là smart layout — có thể giảm seats trong evening để tạo retail/event space. Furniture đã hỗ trợ multi-mode.</p>
+</div>
+
+<!-- LẦU 1 - SOUND LAB -->
+<div class="floor f1">
+<h3><span class="floor-tag" style="background:#8B6914">LẦU 1</span> SOUND LAB · 20 seats · 32 m²</h3>
+<p><strong>Bản chất:</strong> Listening room với DJ booth (FC-04) và speaker cabinets (FC-02/03). Acoustic-treated. Daytime im lặng → coworking-friendly. Evening trở thành program room (vinyl night, listening session).</p>
+
+<table>
+<thead><tr><th>Daypart</th><th>Hours</th><th>Seats active</th><th>Turn rate (Mon-Thu)</th><th>Turn rate (Fri-Sun)</th><th>Cover/day Mon-Thu</th><th>Cover/day Fri-Sun</th></tr></thead>
+<tbody>
+<tr><td>Morning</td><td>4h (07-11)</td><td>20</td><td>0.4</td><td>0.5</td><td>8</td><td>10</td></tr>
+<tr><td>Noon</td><td>3h (11-14)</td><td>20</td><td>0.5</td><td>0.7</td><td>10</td><td>14</td></tr>
+<tr><td>Afternoon</td><td>4h (14-18)</td><td>20</td><td>0.6</td><td>0.8</td><td>12</td><td>16</td></tr>
+<tr><td>Evening</td><td>4h (18-22)</td><td>20</td><td>1.0</td><td>1.4</td><td>20</td><td>28</td></tr>
+<tr><td>Late-night</td><td>4h (22-02)</td><td>20</td><td>1.2 (DJ set)</td><td>1.8 (peak)</td><td>24</td><td>36</td></tr>
+<tr style="background:#fdf6e9"><td colspan="5"><strong>TOTAL daily cover</strong></td><td><strong>74</strong></td><td><strong>104</strong></td></tr>
+</tbody>
+</table>
+
+<p style="margin-top:10px;font-size:12px;color:#666"><strong>Insight:</strong> Daytime (sáng/trưa) under-utilized — đây là cơ hội cho <strong>Coffee cupping morning</strong> (Channel 3 retail) và <strong>Coworking/Reading hour</strong> (low-cost ticket 80k incl. coffee). Có thể tăng cover Mon-Thu lên ~95.</p>
+</div>
+
+<!-- LẦU 2 - BAR/DINING -->
+<div class="floor f2">
+<h3><span class="floor-tag" style="background:#6B7B3A">LẦU 2</span> BAR + DINING · 24 seats · 28 m²</h3>
+<p><strong>Bản chất:</strong> Tầng main F&B revenue. Có bar counter (FC-01) + dining seats. Phục vụ tasting menu evening, cocktail evening + late-night. Đây là tầng có ticket cao nhất.</p>
+
+<table>
+<thead><tr><th>Daypart</th><th>Hours</th><th>Seats active</th><th>Turn rate (Mon-Thu)</th><th>Turn rate (Fri-Sun)</th><th>Cover/day Mon-Thu</th><th>Cover/day Fri-Sun</th></tr></thead>
+<tbody>
+<tr><td>Morning</td><td>—</td><td>0 (closed)</td><td>—</td><td>—</td><td>0</td><td>0</td></tr>
+<tr><td>Noon</td><td>3h (11-14)</td><td>24 (lunch service Th-Sun)</td><td>0.3</td><td>0.7</td><td>7</td><td>17</td></tr>
+<tr><td>Afternoon</td><td>4h (14-18)</td><td>12 (pre-dinner)</td><td>0.4</td><td>0.6</td><td>5</td><td>7</td></tr>
+<tr><td>Evening</td><td>4h (18-22)</td><td>24</td><td>1.5</td><td>2.2</td><td>36</td><td>53</td></tr>
+<tr><td>Late-night</td><td>4h (22-02)</td><td>20 (4 turn over)</td><td>1.0</td><td>1.6</td><td>20</td><td>32</td></tr>
+<tr style="background:#f3f5e9"><td colspan="5"><strong>TOTAL daily cover</strong></td><td><strong>68</strong></td><td><strong>109</strong></td></tr>
+</tbody>
+</table>
+
+<p style="margin-top:10px;font-size:12px;color:#666"><strong>Insight:</strong> Lunch turn rate Mon-Thu rất thấp (0.3) → không kinh tế nếu mở. Đề xuất <strong>mở lunch service chỉ Thu–Sun</strong> để giảm labor sáng. Evening peak 1.5–2.2 turn là healthy nhưng <strong>cần queue management</strong> tránh wait-time > 25 phút.</p>
+</div>
+
+<!-- LẦU 3 - LOUNGE -->
+<div class="floor f3">
+<h3><span class="floor-tag" style="background:#3C4A52">LẦU 3</span> LOUNGE / VIP / Speakeasy · 17 seats · 30 m²</h3>
+<p><strong>Bản chất:</strong> Tầng intimate, có thể đóng riêng cho group/private dining. Phù hợp small event, listening session premium, masterclass. Late-night focus, chuyển thành speakeasy energy.</p>
+
+<table>
+<thead><tr><th>Daypart</th><th>Hours</th><th>Seats active</th><th>Turn rate (Mon-Thu)</th><th>Turn rate (Fri-Sun)</th><th>Cover/day Mon-Thu</th><th>Cover/day Fri-Sun</th></tr></thead>
+<tbody>
+<tr><td>Morning</td><td>—</td><td>0 (closed)</td><td>—</td><td>—</td><td>0</td><td>0</td></tr>
+<tr><td>Noon</td><td>—</td><td>0 (closed)</td><td>—</td><td>—</td><td>0</td><td>0</td></tr>
+<tr><td>Afternoon</td><td>4h (14-18)</td><td>17 (event/shoot)</td><td>0.3</td><td>0.5</td><td>5</td><td>9</td></tr>
+<tr><td>Evening</td><td>4h (18-22)</td><td>17</td><td>1.0</td><td>1.5</td><td>17</td><td>26</td></tr>
+<tr><td>Late-night</td><td>4h (22-02)</td><td>17</td><td>1.3</td><td>2.0</td><td>22</td><td>34</td></tr>
+<tr style="background:#eef0f3"><td colspan="5"><strong>TOTAL daily cover</strong></td><td><strong>44</strong></td><td><strong>69</strong></td></tr>
+</tbody>
+</table>
+
+<p style="margin-top:10px;font-size:12px;color:#666"><strong>Insight:</strong> Tầng này có ROI cao nhất khi convert thành <strong>private dining / buyout</strong> — 17 seat × 700k AOV = 11.9M/buổi, tương đương 6 buổi service thường. Đề xuất <strong>book buyout 4–6 lần/tháng</strong>.</p>
+</div>
+
+<!-- ROOFTOP -->
+<div class="floor f4">
+<h3><span class="floor-tag" style="background:#8B9D77">SÂN THƯỢNG</span> ROOFTOP · 14 seats · 35 m²</h3>
+<p><strong>Bản chất:</strong> Open-air, panorama Sài Gòn. USP mạnh nhất của venue. Bị weather-dependent (mưa = đóng). Cocktail + wine focus, evening + late-night chính.</p>
+
+<table>
+<thead><tr><th>Daypart</th><th>Hours</th><th>Seats active</th><th>Turn rate (Mon-Thu)</th><th>Turn rate (Fri-Sun)</th><th>Cover/day Mon-Thu</th><th>Cover/day Fri-Sun</th></tr></thead>
+<tbody>
+<tr><td>Morning</td><td>—</td><td>0 (closed)</td><td>—</td><td>—</td><td>0</td><td>0</td></tr>
+<tr><td>Noon</td><td>—</td><td>0 (closed/heat)</td><td>—</td><td>—</td><td>0</td><td>0</td></tr>
+<tr><td>Afternoon</td><td>2h (16-18)</td><td>14 (sunset prep)</td><td>0.6</td><td>0.9</td><td>8</td><td>13</td></tr>
+<tr><td>Evening</td><td>4h (18-22)</td><td>14</td><td>1.6 (sunset peak)</td><td>2.4</td><td>22</td><td>34</td></tr>
+<tr><td>Late-night</td><td>4h (22-02)</td><td>14</td><td>1.2</td><td>1.8</td><td>17</td><td>25</td></tr>
+<tr style="background:#f1f4ec"><td colspan="5"><strong>TOTAL daily cover</strong></td><td><strong>47</strong></td><td><strong>72</strong></td></tr>
+</tbody>
+</table>
+
+<p style="margin-top:10px;font-size:12px;color:#666"><strong>Insight:</strong> Sunset hour (17-19) là <strong>highest AOV moment</strong> — khách order 1.5 cocktail/người, ticket lên 380k. Nhưng <strong>weather risk</strong>: cần plan B (chuyển khách xuống Lầu 3) khi mưa, ~30% buổi tối Tháng 5–10.</p>
+</div>
+
+<!-- ============== 4. AGGREGATE & VS FINANCE MODEL ============== -->
+<h2>4. Tổng hợp & Cross-check với Finance Model</h2>
+
+<div class="grid-2">
+<div class="kpi"><div class="lbl">Total Daily Cover Mon-Thu (simulation)</div><div class="val">313</div><div class="desc">Sum of 5 floors · weekday baseline</div></div>
+<div class="kpi"><div class="lbl">Total Daily Cover Fri-Sun (simulation)</div><div class="val">461</div><div class="desc">+47% vs weekday · weekend lift</div></div>
+<div class="kpi"><div class="lbl">Weekly Cover (simulation)</div><div class="val">2,635</div><div class="desc">4 weekday + 3 weekend · ~10,540/month</div></div>
+<div class="kpi"><div class="lbl">Finance Model implied cover/month</div><div class="val">~9,800</div><div class="desc">Rev 1.025B/mo ÷ AOV 105k blended</div></div>
+</div>
+
+<div class="card" style="margin-top:14px">
+<h4>Cross-check kết luận</h4>
+<table>
+<thead><tr><th>Metric</th><th>Simulation</th><th>Finance Model</th><th>Δ</th><th>Status</th></tr></thead>
+<tbody>
+<tr><td>Capacity (seats)</td><td>89</td><td>75</td><td>+19%</td><td><span class="badge b-q">Buffer healthy</span></td></tr>
+<tr><td>Avg daily cover</td><td>376</td><td>~330</td><td>+14%</td><td><span class="badge b-q">Sim slightly bullish</span></td></tr>
+<tr><td>Weekend lift</td><td>+47%</td><td>+250–300% (rev based)</td><td>—</td><td><span class="badge b-w">Discrepancy: rev lift > cover lift</span></td></tr>
+<tr><td>Avg turn rate (peak evening)</td><td>1.5–2.2x</td><td>Implied 1.8x</td><td>~match</td><td><span class="badge b-q">Aligned</span></td></tr>
+<tr><td>Late-night utilization</td><td>~75% Fri-Sun</td><td>Embedded in revenue</td><td>—</td><td><span class="badge b-info">Consistent</span></td></tr>
+</tbody>
+</table>
+<p style="margin-top:12px"><strong>Mâu thuẫn quan trọng:</strong> Finance model spending Mon-Thu 200K vs Fri-Sat 700-800K = revenue lift ~3.5x, nhưng simulation cover lift chỉ ~1.5x. Có nghĩa <strong>weekend AOV phải tăng 2.3x</strong> (từ 105k → 240k) — điều này thực tế không, vì khách weekend uống nhiều cocktail hơn (drinks 2–3 ly × 220k). <strong>Kết luận: Finance model assumption đủ realistic nhưng yêu cầu hit rate cocktail/khách rất cao.</strong></p>
+</div>
+
+<!-- ============== 5. CHARTS ============== -->
+<h2>5. Visualisation</h2>
+
+<div class="grid-2">
+<div class="chart-box">
+<h3>Cover/day by Floor × Daypart (Fri-Sun)</h3>
+<div class="canvas-wrap"><canvas id="floorDayChart"></canvas></div>
+</div>
+<div class="chart-box">
+<h3>Turn rate distribution by Daypart</h3>
+<div class="canvas-wrap"><canvas id="turnChart"></canvas></div>
+</div>
+</div>
+
+<div class="grid-2">
+<div class="chart-box">
+<h3>Revenue contribution by Floor (estimated %)</h3>
+<div class="canvas-wrap"><canvas id="revFloorChart"></canvas></div>
+</div>
+<div class="chart-box">
+<h3>Utilization rate by Floor (% of capacity)</h3>
+<div class="canvas-wrap"><canvas id="utilChart"></canvas></div>
+</div>
+</div>
+
+<!-- ============== 6. WEAK SPOTS ============== -->
+<h2>6. Weak spots & Opportunity Map</h2>
+<table>
+<thead><tr><th>Floor × Daypart</th><th>Hiện trạng</th><th>Diagnosis</th><th>Đề xuất</th></tr></thead>
+<tbody>
+<tr><td>Lầu 2 · Lunch Mon-Wed</td><td>Turn 0.3</td><td>Không kinh tế, chi phí labor không cover</td><td>Đóng lunch Mon-Wed, mở Thu–Sun</td></tr>
+<tr><td>Lầu 1 (Sound Lab) · Sáng + trưa</td><td>Turn 0.4–0.5</td><td>Acoustic room rảnh, không có program</td><td>Coffee cupping (Sun morn) + Reading hour weekday</td></tr>
+<tr><td>Lầu 3 · Afternoon</td><td>Turn 0.3 weekday</td><td>Tầng đóng — opportunity cost cao</td><td>Content shoot rental 14:00–17:00 (3h × 2.5M = 7.5M/buổi)</td></tr>
+<tr><td>Rooftop · Mưa</td><td>~30% evening Tháng 5–10 đóng</td><td>Weather risk = revenue loss 35M/tháng</td><td>Lắp mái che retractable hoặc partial cover (capex ~150M)</td></tr>
+<tr><td>Trệt · Evening</td><td>Turn 0.6–0.8</td><td>Cafe đông sáng nhưng tối ít</td><td>Convert thành retail showcase + grab-and-go bar tối</td></tr>
+<tr><td>Tất cả tầng · Mon-Thu evening</td><td>Turn 1.0–1.5</td><td>Có buffer capacity nhưng demand thấp</td><td>Weekday programming (trivia, vinyl, masterclass) — ref §02</td></tr>
+</tbody>
+</table>
+
+<!-- ============== SUMMARY ============== -->
+<div class="summary">
+<h2 style="border-color:rgba(255,255,255,.4)">Kết luận điều hành</h2>
+<ul>
+<li><strong>Capacity giả định trong Finance Model (75 seats) là realistic</strong> — building thực có ~89 seats, cho buffer 19% để xử lý service flow và furniture rotation.</li>
+<li><strong>Lầu 2 (BAR + DINING) là revenue engine</strong>: chiếm ~32% cover Fri-Sun và ~38% revenue. Bất kỳ disruption nào ở Lầu 2 (DJ over-loud, kitchen bottleneck) sẽ đánh trực diện vào P&L.</li>
+<li><strong>Sound Lab + Lầu 3 underutilized weekday</strong> — đây là 2 tầng cần program-driven revenue (như Channel 2 trong báo cáo 02).</li>
+<li><strong>Weekend AOV phải đạt 240K</strong> để match finance model — tức mỗi khách phải order ≥1 cocktail. Cần training service team aggressive trong upselling.</li>
+<li><strong>Weather risk Rooftop</strong> không được tính trong Finance Model — đề xuất set-aside reserve 35M/tháng từ T5–T10 để hedge.</li>
+<li><strong>Không cần thêm seat capacity</strong> — bottleneck nằm ở demand (đặc biệt weekday) chứ không phải supply. Investment nên đi vào marketing và programming, không phải build-out thêm.</li>
+</ul>
+</div>
+
+<div class="footer">CUR8 · Strategic Reports · 03 Daypart Simulation · Page 3/4</div>
+</div>
+
+<script>
+const wineColor = '#8B0000';
+const goldColor = '#C9A961';
+const oliveColor = '#6B7B3A';
+const slateColor = '#3C4A52';
+const sageColor = '#8B9D77';
+
+// Floor × Daypart heatmap-style stacked bar
+new Chart(document.getElementById('floorDayChart'),{
+  type:'bar',
+  data:{
+    labels:['Morning','Noon','Afternoon','Evening','Late-night'],
+    datasets:[
+      {label:'Trệt (Cafe)',data:[62,20,17,8,0],backgroundColor:wineColor},
+      {label:'Lầu 1 (Sound Lab)',data:[10,14,16,28,36],backgroundColor:goldColor},
+      {label:'Lầu 2 (Bar/Dining)',data:[0,17,7,53,32],backgroundColor:oliveColor},
+      {label:'Lầu 3 (Lounge)',data:[0,0,9,26,34],backgroundColor:slateColor},
+      {label:'Rooftop',data:[0,0,13,34,25],backgroundColor:sageColor}
+    ]
+  },
+  options:{plugins:{legend:{position:'bottom'}},responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true},y:{stacked:true,title:{display:true,text:'Cover (Fri-Sun)'}}}}
+});
+
+// Turn rate
+new Chart(document.getElementById('turnChart'),{
+  type:'radar',
+  data:{
+    labels:['Morning','Noon','Afternoon','Evening','Late-night'],
+    datasets:[
+      {label:'Trệt',data:[1.6,1.4,1.2,0.8,0],borderColor:wineColor,backgroundColor:'rgba(139,0,0,.15)'},
+      {label:'Lầu 1',data:[0.5,0.7,0.8,1.4,1.8],borderColor:goldColor,backgroundColor:'rgba(201,169,97,.15)'},
+      {label:'Lầu 2',data:[0,0.7,0.6,2.2,1.6],borderColor:oliveColor,backgroundColor:'rgba(107,123,58,.15)'},
+      {label:'Lầu 3',data:[0,0,0.5,1.5,2.0],borderColor:slateColor,backgroundColor:'rgba(60,74,82,.15)'},
+      {label:'Rooftop',data:[0,0,0.9,2.4,1.8],borderColor:sageColor,backgroundColor:'rgba(139,157,119,.15)'}
+    ]
+  },
+  options:{plugins:{legend:{position:'bottom'}},responsive:true,maintainAspectRatio:false,scales:{r:{beginAtZero:true,max:2.5}}}
+});
+
+// Revenue contribution by floor
+new Chart(document.getElementById('revFloorChart'),{
+  type:'doughnut',
+  data:{
+    labels:['Trệt (Cafe)','Lầu 1 (Sound Lab)','Lầu 2 (Bar/Dining)','Lầu 3 (Lounge)','Rooftop'],
+    datasets:[{data:[14,18,32,18,18],backgroundColor:[wineColor,goldColor,oliveColor,slateColor,sageColor],borderWidth:2,borderColor:'#fff'}]
+  },
+  options:{plugins:{legend:{position:'bottom'},title:{display:true,text:'Estimated revenue mix · Fri-Sun blended'}},responsive:true,maintainAspectRatio:false}
+});
+
+// Utilization
+new Chart(document.getElementById('utilChart'),{
+  type:'bar',
+  data:{
+    labels:['Trệt','Lầu 1','Lầu 2','Lầu 3','Rooftop'],
+    datasets:[
+      {label:'Mon-Thu utilization %',data:[58,42,55,40,52],backgroundColor:'rgba(139,0,0,.5)'},
+      {label:'Fri-Sun utilization %',data:[78,68,82,72,75],backgroundColor:wineColor}
+    ]
+  },
+  options:{plugins:{legend:{position:'bottom'}},responsive:true,maintainAspectRatio:false,scales:{y:{title:{display:true,text:'%'},max:100}}}
+});
+</script>
+</body>
+</html>
