@@ -913,6 +913,118 @@
     ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
 
+    /* ── LOCAL COMPETITOR MAP ── */
+    .local-alert {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: rgba(224,92,92,0.06);
+      border: 1px solid rgba(224,92,92,0.25);
+      border-radius: var(--radius-lg);
+      padding: 20px 24px;
+      margin-bottom: 28px;
+    }
+
+    .local-alert-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .local-alert-title {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--red);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .local-alert-body {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    .local-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .local-map-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+    }
+
+    .local-summary-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .local-summary-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .local-summary-card.threat-high {
+      border-color: rgba(224,92,92,0.3);
+      background: rgba(224,92,92,0.04);
+    }
+
+    .local-summary-card.threat-med-high {
+      border-color: rgba(212,146,75,0.25);
+      background: rgba(212,146,75,0.03);
+    }
+
+    .local-dist-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      background: var(--bg-elevated);
+      padding: 4px 8px;
+      border-radius: 4px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+
+    .local-venue-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .local-venue-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    .threat-row-high td {
+      background: rgba(224,92,92,0.03);
+    }
+
+    .threat-row-high td:first-child {
+      border-left: 3px solid var(--red);
+      padding-left: 17px;
+    }
+
+    .threat-row-med-high td:first-child {
+      border-left: 3px solid var(--amber);
+      padding-left: 17px;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 1100px) {
       .exec-summary-grid { grid-template-columns: 1fr 1fr 1fr; }
@@ -929,6 +1041,7 @@
       .gap-matrix { grid-template-columns: 1fr; }
       .positioning-pillars { grid-template-columns: 1fr; }
       .practices-grid { grid-template-columns: 1fr; }
+      .local-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -953,6 +1066,7 @@
   <nav>
     <a href="#summary" class="active">Executive Summary</a>
     <a href="#vietnam">Vietnam Competitors</a>
+    <a href="#local">Local · 500m</a>
     <a href="#international">International Benchmarks</a>
     <a href="#practices">Best Practices</a>
     <a href="#gaps">Gap Analysis</a>
@@ -1176,6 +1290,342 @@
           </tr>
         </tbody>
       </table>
+    </section>
+
+    <!-- ── LOCAL COMPETITORS ── -->
+    <section id="local">
+      <div class="section-header">
+        <div>
+          <div class="section-number">LOCAL · 500m RADIUS</div>
+          <h2 class="section-title">Local Competitors — 49 Phó Đức Chính</h2>
+          <p class="section-desc">Immediate neighbourhood rivals within walking distance of Cur8. These venues compete for the same evening footfall on the same streets.</p>
+        </div>
+        <div class="section-rule"></div>
+      </div>
+
+      <!-- HIGH THREAT ALERT -->
+      <div class="local-alert">
+        <div class="local-alert-icon">⚡</div>
+        <div>
+          <div class="local-alert-title">2 High-Threat venues confirmed within 500m</div>
+          <div class="local-alert-body">Jackalope Bar is 50m north on the same street and competes directly for the premium evening crowd. Stir (~500m, Asia's Best Bars) commands strong brand gravity in the same spend bracket. Mizuwari Social Club (~400m) overlaps on premium Japanese-influenced positioning.</div>
+        </div>
+      </div>
+
+      <!-- MAP + SUMMARY GRID -->
+      <div class="local-grid">
+
+        <!-- PROXIMITY MAP (SVG) -->
+        <div class="local-map-card">
+          <div style="font-family:var(--font-mono);font-size:10px;color:#c8a96e;letter-spacing:0.12em;text-transform:uppercase;margin-bottom:18px;">Bird's-Eye View · District 1 · ~500m Radius</div>
+          <svg viewBox="0 0 390 370" width="100%" style="display:block;">
+            <!-- BG -->
+            <rect width="390" height="370" fill="#1a1a1a" rx="8"/>
+
+            <!-- Distance rings -->
+            <circle cx="195" cy="195" r="30"  fill="none" stroke="rgba(200,169,110,0.09)" stroke-width="1" stroke-dasharray="4 3"/>
+            <circle cx="195" cy="195" r="60"  fill="none" stroke="rgba(200,169,110,0.08)" stroke-width="1" stroke-dasharray="4 3"/>
+            <circle cx="195" cy="195" r="90"  fill="none" stroke="rgba(200,169,110,0.07)" stroke-width="1" stroke-dasharray="4 3"/>
+            <circle cx="195" cy="195" r="120" fill="none" stroke="rgba(200,169,110,0.06)" stroke-width="1" stroke-dasharray="4 3"/>
+            <circle cx="195" cy="195" r="150" fill="none" stroke="rgba(200,169,110,0.1)"  stroke-width="1.5" stroke-dasharray="5 3"/>
+
+            <!-- Ring labels -->
+            <text x="198" y="168" fill="rgba(200,169,110,0.38)" font-size="7.5" font-family="Space Mono,monospace">100m</text>
+            <text x="198" y="138" fill="rgba(200,169,110,0.35)" font-size="7.5" font-family="Space Mono,monospace">200m</text>
+            <text x="198" y="108" fill="rgba(200,169,110,0.3)"  font-size="7.5" font-family="Space Mono,monospace">300m</text>
+            <text x="198" y="78"  fill="rgba(200,169,110,0.28)" font-size="7.5" font-family="Space Mono,monospace">400m</text>
+            <text x="198" y="48"  fill="rgba(200,169,110,0.3)"  font-size="7.5" font-family="Space Mono,monospace">500m</text>
+
+            <!-- Streets -->
+            <!-- Phó Đức Chính — vertical, through Cur8 -->
+            <line x1="195" y1="12" x2="195" y2="358" stroke="rgba(255,255,255,0.12)" stroke-width="6"/>
+            <text x="199" y="26" fill="rgba(255,255,255,0.22)" font-size="7" font-family="Space Mono,monospace">PHÓ ĐỨC CHÍNH</text>
+
+            <!-- Nguyễn Trãi — diagonal major boulevard, south -->
+            <line x1="10" y1="298" x2="375" y2="268" stroke="rgba(255,255,255,0.08)" stroke-width="5"/>
+            <text x="18" y="295" fill="rgba(255,255,255,0.18)" font-size="7" font-family="Space Mono,monospace">NGUYỄN TRÃI</text>
+
+            <!-- Bui Vien / Đề Thám — west -->
+            <line x1="10" y1="228" x2="162" y2="222" stroke="rgba(255,255,255,0.06)" stroke-width="3"/>
+            <text x="12" y="218" fill="rgba(255,255,255,0.15)" font-size="7" font-family="Space Mono,monospace">BUI VIEN</text>
+
+            <!-- Lý Tự Trọng — east-west, north side -->
+            <line x1="90" y1="130" x2="378" y2="126" stroke="rgba(255,255,255,0.07)" stroke-width="3"/>
+            <text x="218" y="122" fill="rgba(255,255,255,0.18)" font-size="7" font-family="Space Mono,monospace">LÝ TỰ TRỌNG</text>
+
+            <!-- Pasteur — vertical, east -->
+            <line x1="315" y1="12" x2="315" y2="370" stroke="rgba(255,255,255,0.06)" stroke-width="3"/>
+            <text x="317" y="22" fill="rgba(255,255,255,0.15)" font-size="7" font-family="Space Mono,monospace">PASTEUR</text>
+
+            <!-- ── COMPETITORS ── -->
+
+            <!-- Bui Vien tourist zone (dashed area) -->
+            <ellipse cx="78" cy="225" rx="55" ry="18" fill="rgba(74,69,61,0.08)" stroke="rgba(74,69,61,0.25)" stroke-width="1" stroke-dasharray="3 2"/>
+            <text x="32" y="230" fill="rgba(100,95,88,0.7)" font-size="7" font-family="Space Mono,monospace">TOURIST ZONE</text>
+
+            <!-- Jackalope — 50m north, same street — RED HIGH -->
+            <circle cx="195" cy="173" r="9" fill="rgba(224,92,92,0.28)" stroke="#e05c5c" stroke-width="2"/>
+            <text x="207" y="170" fill="#e05c5c" font-size="8.5" font-family="Space Mono,monospace" font-weight="bold">Jackalope</text>
+            <text x="207" y="180" fill="rgba(224,92,92,0.65)" font-size="7"   font-family="Space Mono,monospace">50m · HIGH</text>
+
+            <!-- Original Bar — 200m south on Nguyễn Trãi — BLUE MED -->
+            <circle cx="195" cy="258" r="7" fill="rgba(107,160,212,0.2)" stroke="#6ba0d4" stroke-width="1.5"/>
+            <text x="205" y="255" fill="#6ba0d4" font-size="8.5" font-family="Space Mono,monospace">Original Bar</text>
+            <text x="205" y="264" fill="rgba(107,160,212,0.6)" font-size="7"  font-family="Space Mono,monospace">~200m · MED</text>
+
+            <!-- Mizuwari — 400m NE on Lý Tự Trọng — AMBER MED-HIGH -->
+            <circle cx="296" cy="128" r="8" fill="rgba(212,146,75,0.22)" stroke="#d4924b" stroke-width="1.8"/>
+            <text x="307" y="125" fill="#d4924b" font-size="8.5" font-family="Space Mono,monospace">Mizuwari</text>
+            <text x="307" y="134" fill="rgba(212,146,75,0.6)" font-size="7"  font-family="Space Mono,monospace">~400m · MED-HIGH</text>
+
+            <!-- The Pi Concepts — ~350m east -->
+            <circle cx="268" cy="192" r="6" fill="rgba(74,69,61,0.45)" stroke="#4a453d" stroke-width="1.5"/>
+            <text x="277" y="189" fill="#8a8070" font-size="8.5" font-family="Space Mono,monospace">Pi Concepts</text>
+            <text x="277" y="198" fill="rgba(74,69,61,0.9)" font-size="7"   font-family="Space Mono,monospace">~350m · LOW-MED</text>
+
+            <!-- Stir — ~500m NE, Asia's Best Bars — RED HIGH -->
+            <circle cx="330" cy="153" r="9" fill="rgba(224,92,92,0.28)" stroke="#e05c5c" stroke-width="2"/>
+            <text x="342" y="150" fill="#e05c5c" font-size="8.5" font-family="Space Mono,monospace" font-weight="bold">Stir</text>
+            <text x="342" y="159" fill="rgba(224,92,92,0.65)" font-size="7"  font-family="Space Mono,monospace">~500m · HIGH</text>
+
+            <!-- Bonica Bar — ~500m, Pasteur SE -->
+            <circle cx="315" cy="285" r="6" fill="rgba(74,69,61,0.45)" stroke="#4a453d" stroke-width="1.5"/>
+            <text x="262" y="297" fill="#8a8070" font-size="8.5" font-family="Space Mono,monospace">Bonica Bar</text>
+            <text x="265" y="306" fill="rgba(74,69,61,0.9)" font-size="7"   font-family="Space Mono,monospace">~500m · LOW</text>
+
+            <!-- CUR8 — gold, centre -->
+            <circle cx="195" cy="195" r="13" fill="rgba(200,169,110,0.18)" stroke="#c8a96e" stroke-width="2.5"/>
+            <text x="195" y="199" fill="#c8a96e" font-size="10" font-family="Space Mono,monospace" font-weight="bold" text-anchor="middle">C8</text>
+            <text x="195" y="215" fill="rgba(200,169,110,0.75)" font-size="7.5" font-family="Space Mono,monospace" text-anchor="middle">CUR8</text>
+
+            <!-- North arrow -->
+            <g transform="translate(357,330)">
+              <line x1="0" y1="22" x2="0" y2="2"    stroke="rgba(255,255,255,0.3)" stroke-width="1.5"/>
+              <polygon points="0,0 -4,11 4,11"        fill="rgba(255,255,255,0.3)"/>
+              <text x="0" y="34" fill="rgba(255,255,255,0.22)" font-size="8" font-family="Space Mono,monospace" text-anchor="middle">N</text>
+            </g>
+          </svg>
+
+          <!-- Map legend -->
+          <div style="margin-top:16px;display:flex;flex-wrap:wrap;gap:14px;">
+            <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#e05c5c;"></div><span style="font-size:10px;color:#8a8070;font-family:var(--font-mono);">HIGH</span></div>
+            <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#d4924b;"></div><span style="font-size:10px;color:#8a8070;font-family:var(--font-mono);">MED-HIGH</span></div>
+            <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#6ba0d4;"></div><span style="font-size:10px;color:#8a8070;font-family:var(--font-mono);">MEDIUM</span></div>
+            <div style="display:flex;align-items:center;gap:6px;"><div style="width:8px;height:8px;border-radius:50%;background:#4a453d;"></div><span style="font-size:10px;color:#8a8070;font-family:var(--font-mono);">LOW</span></div>
+          </div>
+        </div>
+
+        <!-- THREAT SUMMARY CARDS -->
+        <div class="local-summary-cards">
+
+          <div class="local-summary-card threat-high">
+            <div class="local-dist-badge">~50m</div>
+            <div>
+              <div class="local-venue-name">Jackalope Bar</div>
+              <div class="local-venue-sub">56 Phó Đức Chính · same street</div>
+              <div style="margin-top:7px;font-size:11px;color:var(--text-secondary);line-height:1.5;">American whisky bar · Modern Rustic · jazz/blues · live music Saturdays · outdoor balcony · ~80 cap · 180K–300K VND</div>
+            </div>
+            <span class="tag tag-red">HIGH</span>
+          </div>
+
+          <div class="local-summary-card threat-high">
+            <div class="local-dist-badge">~500m</div>
+            <div>
+              <div class="local-venue-name">Stir</div>
+              <div class="local-venue-sub">District 1 · Asia's Best Bars list</div>
+              <div style="margin-top:7px;font-size:11px;color:var(--text-secondary);line-height:1.5;">Award-winning cocktails · premium pricing · strong international recognition · curated music vibe</div>
+            </div>
+            <span class="tag tag-red">HIGH</span>
+          </div>
+
+          <div class="local-summary-card threat-med-high">
+            <div class="local-dist-badge">~400m</div>
+            <div>
+              <div class="local-venue-name">Mizuwari Social Club</div>
+              <div class="local-venue-sub">39 Lý Tự Trọng · Japanese cocktail bar</div>
+              <div style="margin-top:7px;font-size:11px;color:var(--text-secondary);line-height:1.5;">Elegant minimalist Japanese design · sake selection · Mizuwari signature · 250K–400K VND</div>
+            </div>
+            <span class="tag tag-amber">MED-HIGH</span>
+          </div>
+
+          <div class="local-summary-card">
+            <div class="local-dist-badge">~200m</div>
+            <div>
+              <div class="local-venue-name">Original Bar</div>
+              <div class="local-venue-sub">269/4 Nguyễn Trãi · bar / pub</div>
+              <div style="margin-top:7px;font-size:11px;color:var(--text-secondary);line-height:1.5;">Casual, younger crowd · accessible price point · 70K–200K VND — low positioning overlap</div>
+            </div>
+            <span class="tag tag-blue">MEDIUM</span>
+          </div>
+
+          <div class="local-summary-card">
+            <div class="local-dist-badge">350–500m</div>
+            <div>
+              <div class="local-venue-name">The Pi Concepts &amp; Bonica Bar</div>
+              <div class="local-venue-sub">District 1 · casual / celebration</div>
+              <div style="margin-top:7px;font-size:11px;color:var(--text-secondary);line-height:1.5;">Pi: bright space, sherry/mezcal experiments · Bonica (82 Pasteur): nightlife/celebration — minimal guest overlap</div>
+            </div>
+            <span class="tag tag-green">LOW</span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- FULL DETAIL TABLE -->
+      <table class="competitor-table">
+        <thead>
+          <tr>
+            <th>Venue</th>
+            <th>Distance</th>
+            <th>Concept &amp; Vibe</th>
+            <th>Price Range</th>
+            <th>Overlap Analysis</th>
+            <th>Threat</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <!-- HIGH — Jackalope Bar -->
+          <tr class="threat-row-high">
+            <td>
+              <span class="venue-name">Jackalope Bar</span>
+              <span class="venue-location">56 Phó Đức Chính · D1</span>
+            </td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:#e05c5c;">~50m</span>
+              <br><span style="font-size:11px;color:var(--text-muted);">Same street</span>
+            </td>
+            <td>
+              <span class="tag tag-amber">American Whisky Bar</span>
+              <div class="diff-text" style="margin-top:7px;">Modern Rustic · jazz &amp; blues soundtrack · outdoor balcony · live music Saturdays · ~80 pax capacity</div>
+            </td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);">180K–300K</span>
+              <br><span style="font-size:11px;color:var(--text-muted);">VND / cocktail</span>
+            </td>
+            <td class="diff-text">Literally 50m away on the same street. Direct overlap with the premium evening crowd Cur8 targets. Saturday live music is a direct programming conflict. Differentiator: Cur8 owns music-as-purpose vs Jackalope's music-as-atmosphere.</td>
+            <td><span class="tag tag-red">HIGH</span></td>
+          </tr>
+
+          <!-- HIGH — Stir -->
+          <tr class="threat-row-high">
+            <td>
+              <span class="venue-name">Stir</span>
+              <span class="venue-location">District 1 · Asia's Best Bars</span>
+            </td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:#e05c5c;">~500m</span>
+              <br><span style="font-size:11px;color:var(--text-muted);">Outer radius</span>
+            </td>
+            <td>
+              <span class="tag tag-blue">Award-Winning Cocktail Bar</span>
+              <div class="diff-text" style="margin-top:7px;">Premium cocktails · curated music vibe · internationally ranked · strong aspirational brand equity</div>
+            </td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);">Premium</span>
+              <br><span style="font-size:11px;color:var(--text-muted);">250K+ est.</span>
+            </td>
+            <td class="diff-text">Asia's Best Bars status gives Stir magnetic pull on the same premium spend bracket. Competes for the same "special evening" decision. Cur8's moat: vinyl + audiophile identity fills a space Stir leaves empty — music is vibe there, ritual here.</td>
+            <td><span class="tag tag-red">HIGH</span></td>
+          </tr>
+
+          <!-- MED-HIGH — Mizuwari -->
+          <tr class="threat-row-med-high">
+            <td>
+              <span class="venue-name">Mizuwari Social Club</span>
+              <span class="venue-location">39 Lý Tự Trọng · D1</span>
+            </td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:13px;font-weight:600;color:#d4924b;">~400m</span>
+              <br><span style="font-size:11px;color:var(--text-muted);">10 min walk</span>
+            </td>
+            <td>
+              <span class="tag tag-gold">Japanese Cocktail Bar</span>
+              <div class="diff-text" style="margin-top:7px;">Elegant minimalist design · sake selection · Mizuwari signature drink · deliberate, considered aesthetic</div>
+            </td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);">250K–400K</span>
+              <br><span style="font-size:11px;color:var(--text-muted);">VND / cocktail</span>
+            </td>
+            <td class="diff-text">Premium positioning and Japanese-inspired intentionality overlap with Cur8's target guest profile — the mindful, design-conscious drinker. Key split: Mizuwari is drinks-first; Cur8 is music-first. Potential to coexist as part of the same micro bar district.</td>
+            <td><span class="tag tag-amber">MED-HIGH</span></td>
+          </tr>
+
+          <!-- MEDIUM — Original Bar -->
+          <tr>
+            <td>
+              <span class="venue-name">Original Bar</span>
+              <span class="venue-location">269/4 Nguyễn Trãi · Q1</span>
+            </td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:13px;color:#6ba0d4;">~200m</span>
+              <br><span style="font-size:11px;color:var(--text-muted);">5 min walk</span>
+            </td>
+            <td>
+              <span class="tag tag-blue">Bar / Pub</span>
+              <div class="diff-text" style="margin-top:7px;">Casual, younger crowd · accessible price point · neighbourhood pub energy</div>
+            </td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);">70K–200K</span>
+              <br><span style="font-size:11px;color:var(--text-muted);">VND range</span>
+            </td>
+            <td class="diff-text">Lower price tier substantially reduces direct guest overlap. Casual positioning diverges from Cur8's premium, purposeful experience. May serve as an early-stop before guests choose a destination bar.</td>
+            <td><span class="tag tag-blue">MEDIUM</span></td>
+          </tr>
+
+          <!-- LOW-MED — The Pi Concepts -->
+          <tr>
+            <td>
+              <span class="venue-name">The Pi Concepts</span>
+              <span class="venue-location">District 1</span>
+            </td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:13px;color:var(--text-muted);">~350m</span>
+              <br><span style="font-size:11px;color:var(--text-muted);">est.</span>
+            </td>
+            <td>
+              <span class="tag tag-green">Casual Cocktail</span>
+              <div class="diff-text" style="margin-top:7px;">Bright interior (not speakeasy) · sherry, liqueur &amp; mezcal focus · mid-range · experimental menu</div>
+            </td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);">Mid-range</span>
+              <br><span style="font-size:11px;color:var(--text-muted);">est.</span>
+            </td>
+            <td class="diff-text">Bright, casual aesthetic is the opposite of Cur8's intimate dark listening room. Guest intent diverges significantly. Experimental drink focus may attract curious drinkers, but the listening experience is not a draw here.</td>
+            <td><span class="tag tag-green">LOW-MED</span></td>
+          </tr>
+
+          <!-- LOW — Bonica Bar -->
+          <tr>
+            <td>
+              <span class="venue-name">Bonica Bar</span>
+              <span class="venue-location">82 Pasteur · Bến Nghé · D1</span>
+            </td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:13px;color:var(--text-muted);">~500m</span>
+              <br><span style="font-size:11px;color:var(--text-muted);">Outer radius</span>
+            </td>
+            <td>
+              <span class="tag tag-green">Celebration Bar</span>
+              <div class="diff-text" style="margin-top:7px;">Nightlife-focused · celebration occasions · birthday/party crowd · high energy format</div>
+            </td>
+            <td>
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);">Mid-range</span>
+              <br><span style="font-size:11px;color:var(--text-muted);">est.</span>
+            </td>
+            <td class="diff-text">Celebration/party energy is the polar opposite of Cur8's slow-listening ethos. No guest intent overlap. Zero competitive concern; may even send guests Cur8's way when they want a more considered experience.</td>
+            <td><span class="tag tag-green">LOW</span></td>
+          </tr>
+
+        </tbody>
+      </table>
+
+      <!-- NEIGHBOURHOOD CONTEXT -->
+      <div class="narrative-block" style="margin-top:24px;">
+        <h3>Neighbourhood Context &amp; Strategy</h3>
+        <p>The Bui Vien Walking Street area (~300m west) generates high tourist foot traffic but represents an entirely different consumer profile — backpacker crowd, cheap shots, loud EDM. This creates a neighbourhood identity tension that Cur8 can exploit: position explicitly as the <em>antidote</em> to Bui Vien energy. The quiet, intentional experience of Cur8 becomes even more distinctive because of the contrast next door.</p>
+        <p>The concentration of premium bars within 500m — Jackalope, Mizuwari, Stir — is creating a micro bar district in District 1. This works in Cur8's favour through destination clustering: guests bar-hop between premium venues in one evening. The risk is share-of-wallet compression. Cur8's music-first identity must be compelling enough to be the <em>anchor</em> of the evening, not just one stop among equals.</p>
+      </div>
     </section>
 
     <!-- ── 03 INTERNATIONAL ── -->
