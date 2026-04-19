@@ -1,0 +1,1690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cur8 — Financial Advisory Memo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-base:     #0a0a0a;
+      --bg-surface:  #111111;
+      --bg-elevated: #1a1a1a;
+      --bg-card:     #141414;
+      --border:      rgba(255,255,255,0.07);
+      --border-accent: rgba(200,169,110,0.3);
+
+      --gold:      #c8a96e;
+      --gold-dim:  rgba(200,169,110,0.12);
+      --gold-glow: rgba(200,169,110,0.05);
+
+      --text-primary:   #f0ece4;
+      --text-secondary: #8a8070;
+      --text-muted:     #4a453d;
+
+      --green:      #4caf7d;
+      --green-dim:  rgba(76,175,125,0.10);
+      --red:        #e05c5c;
+      --red-dim:    rgba(224,92,92,0.10);
+      --amber:      #d4924b;
+      --amber-dim:  rgba(212,146,75,0.10);
+      --blue:       #6ba0d4;
+      --blue-dim:   rgba(107,160,212,0.10);
+
+      --font-sans: 'Space Grotesk', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-base);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.65;
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(10,10,10,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark {
+      width: 28px;
+      height: 28px;
+      border: 1.5px solid var(--gold);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.02em;
+    }
+
+    .brand-name {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      color: var(--text-primary);
+      text-transform: uppercase;
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      font-size: 11px;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+    }
+
+    .doc-badge {
+      background: var(--gold-dim);
+      border: 1px solid var(--border-accent);
+      color: var(--gold);
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* ── NAV PILLS ── */
+    nav {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      display: flex;
+      gap: 4px;
+      overflow-x: auto;
+    }
+
+    nav a {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.15s, border-color 0.15s;
+    }
+    nav a:hover { color: var(--text-primary); }
+    nav a.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+    .nav-num {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+    }
+
+    /* ── LAYOUT ── */
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 32px 80px;
+    }
+
+    section {
+      margin-bottom: 56px;
+      scroll-margin-top: 80px;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .section-index {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      padding-top: 6px;
+      min-width: 28px;
+    }
+
+    .section-title h2 {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .section-title p {
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    /* ── HERO BANNER ── */
+    .hero-banner {
+      background: linear-gradient(135deg, #111111 0%, #161410 100%);
+      border: 1px solid var(--border-accent);
+      border-radius: var(--radius-lg);
+      padding: 36px 40px;
+      margin-bottom: 56px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 80% at 90% 10%, rgba(200,169,110,0.07) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 32px;
+      margin-bottom: 28px;
+    }
+
+    .hero-doc-info {}
+
+    .hero-doc-type {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .hero-title {
+      font-size: 30px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+    }
+
+    .hero-subtitle {
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .verdict-chip {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+
+    .verdict-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    .verdict-badge {
+      padding: 8px 20px;
+      border-radius: 24px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .verdict-badge.conditional {
+      background: var(--amber-dim);
+      border: 1.5px solid rgba(212,146,75,0.4);
+      color: var(--amber);
+    }
+
+    .hero-kpis {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .hero-kpi {
+      background: rgba(20,20,20,0.9);
+      padding: 16px 18px;
+    }
+
+    .hero-kpi-label {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .hero-kpi-value {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text-primary);
+    }
+
+    .hero-kpi-value.gold { color: var(--gold); }
+    .hero-kpi-value.green { color: var(--green); }
+    .hero-kpi-value.amber { color: var(--amber); }
+    .hero-kpi-value.red { color: var(--red); }
+
+    .hero-kpi-sub {
+      font-size: 10px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    /* ── CARDS ── */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+    }
+
+    .card + .card { margin-top: 12px; }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    /* ── ISSUE CARDS ── */
+    .issue-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .issue-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 20px 24px;
+    }
+
+    .issue-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .issue-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+    }
+
+    .issue-icon.red { background: var(--red-dim); }
+    .issue-icon.amber { background: var(--amber-dim); }
+    .issue-icon.blue { background: var(--blue-dim); }
+
+    .issue-info {}
+    .issue-title { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 3px; }
+    .issue-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+    .severity-badge {
+      flex-shrink: 0;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .severity-badge.critical {
+      background: var(--red-dim);
+      border: 1px solid rgba(224,92,92,0.3);
+      color: var(--red);
+    }
+
+    .severity-badge.high {
+      background: var(--amber-dim);
+      border: 1px solid rgba(212,146,75,0.3);
+      color: var(--amber);
+    }
+
+    .severity-badge.medium {
+      background: var(--blue-dim);
+      border: 1px solid rgba(107,160,212,0.3);
+      color: var(--blue);
+    }
+
+    .issue-body {
+      border-top: 1px solid var(--border);
+      padding: 16px 24px;
+      background: rgba(255,255,255,0.015);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .issue-fact {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .fact-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .fact-value {
+      font-size: 13px;
+      color: var(--text-primary);
+    }
+
+    .fact-value.bad { color: var(--red); }
+    .fact-value.warn { color: var(--amber); }
+    .fact-value.ok { color: var(--green); }
+
+    /* ── RECOMMENDATION CARDS ── */
+    .rec-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+
+    .rec-card:hover { border-color: var(--border-accent); }
+
+    .rec-header {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 22px 24px;
+    }
+
+    .rec-number {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius-sm);
+      background: var(--gold-dim);
+      border: 1px solid var(--border-accent);
+      color: var(--gold);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .rec-meta {}
+    .rec-title { font-size: 16px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+    .rec-tagline { font-size: 13px; color: var(--text-secondary); }
+
+    .rec-body {
+      padding: 0 24px 22px 74px;
+    }
+
+    .rec-body p {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 16px;
+    }
+
+    .rec-numbers {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .rec-num-item {
+      background: var(--bg-elevated);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+    }
+
+    .rec-num-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .rec-num-value {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .rec-num-value.gold { color: var(--gold); }
+    .rec-num-value.green { color: var(--green); }
+    .rec-num-value.amber { color: var(--amber); }
+
+    .action-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .action-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+    }
+
+    .action-list li::before {
+      content: '→';
+      color: var(--gold);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 0px;
+    }
+
+    /* ── SCENARIO TABLE ── */
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: 220px 1fr 1fr 1fr;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .sg-cell {
+      padding: 14px 18px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .sg-cell:last-child { border-right: none; }
+    .sg-cell.last-row { border-bottom: none; }
+
+    .sg-cell.header {
+      background: var(--bg-elevated);
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .sg-cell.row-label {
+      background: rgba(255,255,255,0.015);
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 500;
+    }
+
+    .sg-cell.header.conservative { color: var(--red); }
+    .sg-cell.header.base { color: var(--amber); }
+    .sg-cell.header.optimistic { color: var(--green); }
+
+    .sg-value {
+      font-family: var(--font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .sg-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    .sg-cell.conservative .sg-value { color: var(--red); }
+    .sg-cell.base .sg-value { color: var(--amber); }
+    .sg-cell.optimistic .sg-value { color: var(--green); }
+
+    .scenario-assumptions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    .sa-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+    }
+
+    .sa-card.conservative { border-top: 2px solid var(--red); }
+    .sa-card.base { border-top: 2px solid var(--amber); }
+    .sa-card.optimistic { border-top: 2px solid var(--green); }
+
+    .sa-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .sa-card.conservative .sa-title { color: var(--red); }
+    .sa-card.base .sa-title { color: var(--amber); }
+    .sa-card.optimistic .sa-title { color: var(--green); }
+
+    .sa-items { list-style: none; }
+
+    .sa-items li {
+      font-size: 12px;
+      color: var(--text-secondary);
+      padding: 5px 0;
+      border-bottom: 1px solid var(--border);
+      line-height: 1.4;
+    }
+
+    .sa-items li:last-child { border-bottom: none; }
+
+    /* ── RISK MATRIX ── */
+    .risk-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .risk-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 18px 20px;
+    }
+
+    .risk-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .risk-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .risk-pill {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 12px;
+    }
+
+    .risk-pill.high { background: var(--red-dim); color: var(--red); border: 1px solid rgba(224,92,92,0.25); }
+    .risk-pill.medium { background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(212,146,75,0.25); }
+    .risk-pill.low { background: var(--green-dim); color: var(--green); border: 1px solid rgba(76,175,125,0.25); }
+
+    .risk-desc {
+      font-size: 12.5px;
+      color: var(--text-secondary);
+      line-height: 1.55;
+      margin-bottom: 10px;
+    }
+
+    .risk-mitigation {
+      font-size: 12px;
+      color: var(--text-muted);
+      padding: 10px 12px;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-sm);
+      border-left: 2px solid var(--gold);
+      line-height: 1.5;
+    }
+
+    .risk-mitigation strong { color: var(--gold); }
+
+    /* ── PAYBACK TIMELINE ── */
+    .timeline {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .tl-item {
+      flex: 1;
+      padding: 18px 20px;
+      border-right: 1px solid var(--border);
+      position: relative;
+    }
+
+    .tl-item:last-child { border-right: none; }
+
+    .tl-item.highlight {
+      background: linear-gradient(180deg, rgba(200,169,110,0.06) 0%, transparent 100%);
+      border-top: 2px solid var(--gold);
+    }
+
+    .tl-month {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .tl-event {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 4px;
+      line-height: 1.35;
+    }
+
+    .tl-detail {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+
+    /* ── DIVIDER ── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 32px 0;
+    }
+
+    /* ── INLINE DATA TABLE ── */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    .data-table th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 10px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table td {
+      padding: 11px 14px;
+      color: var(--text-secondary);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .data-table td.num {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--text-primary);
+      text-align: right;
+    }
+
+    .data-table td.num.bad { color: var(--red); }
+    .data-table td.num.warn { color: var(--amber); }
+    .data-table td.num.ok { color: var(--green); }
+
+    /* ── TWO COL ── */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    footer span { color: var(--text-muted); }
+
+    .footer-logo { color: var(--gold); font-weight: 700; }
+
+    /* ── CALLOUT ── */
+    .callout {
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      font-size: 13px;
+      line-height: 1.6;
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+    }
+
+    .callout.amber {
+      background: var(--amber-dim);
+      border: 1px solid rgba(212,146,75,0.25);
+      color: var(--amber);
+    }
+
+    .callout.red {
+      background: var(--red-dim);
+      border: 1px solid rgba(224,92,92,0.25);
+      color: var(--red);
+    }
+
+    .callout.green {
+      background: var(--green-dim);
+      border: 1px solid rgba(76,175,125,0.25);
+      color: var(--green);
+    }
+
+    .callout-icon { font-size: 16px; flex-shrink: 0; }
+    .callout-body { color: var(--text-secondary); }
+    .callout-body strong { color: inherit; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      main { padding: 24px 16px 60px; }
+      header { padding: 0 16px; }
+      nav { padding: 0 16px; }
+      .hero-banner { padding: 24px 20px; }
+      .hero-top { flex-direction: column; gap: 20px; }
+      .hero-kpis { grid-template-columns: repeat(3, 1fr); }
+      .rec-body { padding: 0 16px 20px; }
+      .rec-numbers { grid-template-columns: 1fr 1fr; }
+      .scenario-grid { grid-template-columns: 160px 1fr 1fr 1fr; }
+      .scenario-assumptions { grid-template-columns: 1fr; }
+      .risk-grid { grid-template-columns: 1fr; }
+      .two-col { grid-template-columns: 1fr; }
+      .timeline { flex-direction: column; }
+      .tl-item { border-right: none; border-bottom: 1px solid var(--border); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="header-brand">
+    <div class="brand-mark">C8</div>
+    <span class="brand-name">Cur8</span>
+  </div>
+  <div class="header-meta">
+    <span class="doc-badge">Financial Advisory</span>
+    <span>19 Apr 2026</span>
+    <span>CONFIDENTIAL</span>
+  </div>
+</header>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#exec-summary" class="active"><span class="nav-num">01</span> Executive Summary</a>
+  <a href="#critical-issues"><span class="nav-num">02</span> Critical Issues</a>
+  <a href="#recommendations"><span class="nav-num">03</span> Recommendations</a>
+  <a href="#scenarios"><span class="nav-num">04</span> Scenario Analysis</a>
+  <a href="#risk"><span class="nav-num">05</span> Risk Mitigation</a>
+</nav>
+
+<main>
+
+  <!-- ── HERO BANNER ── -->
+  <div class="hero-banner">
+    <div class="hero-top">
+      <div class="hero-doc-info">
+        <div class="hero-doc-type">Financial Advisory Memorandum</div>
+        <h1 class="hero-title">Cur8 — Multi-Concept Venue<br>Financial Model Review</h1>
+        <p class="hero-subtitle">49 Phó Đức Chính, District 1, HCMC &nbsp;·&nbsp; Opening June 2026 &nbsp;·&nbsp; 150m² / 100 seats</p>
+      </div>
+      <div class="verdict-chip">
+        <span class="verdict-label">Advisory Verdict</span>
+        <span class="verdict-badge conditional">Conditional Go</span>
+      </div>
+    </div>
+    <div class="hero-kpis">
+      <div class="hero-kpi">
+        <div class="hero-kpi-label">Investment</div>
+        <div class="hero-kpi-value gold">5.59B</div>
+        <div class="hero-kpi-sub">VND total capex</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-label">Y1 Revenue</div>
+        <div class="hero-kpi-value">13.83B</div>
+        <div class="hero-kpi-sub">VND modeled</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-label">Y1 EBITDA</div>
+        <div class="hero-kpi-value amber">24.2%</div>
+        <div class="hero-kpi-sub">3.35B VND</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-label">Payback</div>
+        <div class="hero-kpi-value amber">~3.1 yrs</div>
+        <div class="hero-kpi-sub">base case</div>
+      </div>
+      <div class="hero-kpi">
+        <div class="hero-kpi-label">Model Risk</div>
+        <div class="hero-kpi-value red">HIGH</div>
+        <div class="hero-kpi-sub">3 critical issues</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 01: EXECUTIVE SUMMARY ── -->
+  <section id="exec-summary">
+    <div class="section-header">
+      <span class="section-index">01</span>
+      <div class="section-title">
+        <h2>Executive Summary</h2>
+        <p>Verdict and key financial metrics at a glance</p>
+      </div>
+    </div>
+
+    <div class="callout amber">
+      <span class="callout-icon">⚠</span>
+      <div class="callout-body">
+        <strong>Verdict: Conditional Go.</strong> The Cur8 concept is commercially viable with a compelling EBITDA profile, but the current financial model contains three structural errors that overstate revenue by an estimated <strong>20–35%</strong>. We recommend correcting the model before finalizing investor commitments or lease terms.
+      </div>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--green)"></span>Strengths</div>
+        <ul class="action-list">
+          <li>Strong unit economics: 150m² at 75M VND/month rent is favorable for D1 (≈500K/m²/month)</li>
+          <li>Multi-concept model (Cafe + Bar + Sound Lab) creates natural daypart diversification and reduces single-revenue-stream risk</li>
+          <li>Y1 EBITDA of 24.2% is achievable if pricing holds — well above F&amp;B sector median of 15–18%</li>
+          <li>5.59B VND investment is lean relative to revenue potential; capex efficiency is high</li>
+          <li>Weekend premium (700K avg check) is plausible for D1 experiential venues with Sound Lab differentiation</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--red)"></span>Structural Concerns</div>
+        <ul class="action-list">
+          <li>Occupancy labeled at 88.8%–107.5% Y1-Y2 is modeling confusion — requires seat-turn clarification</li>
+          <li>Average check 427K VND is 2–3× competitor benchmarks without sufficient differentiation premium justification</li>
+          <li>Revenue growth assumed flat at Y3–Y5 — leaves significant value on the table and creates no upside scenario</li>
+          <li>Event revenue not isolated — complicates pricing, staffing, and operational planning</li>
+          <li>Working capital ramp-up period (M1–M3) is not reflected in cash flow projections</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top:12px;">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--gold)"></span>P&amp;L Snapshot (As Modeled)</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th style="text-align:right">Year 1</th>
+              <th style="text-align:right">Year 2</th>
+              <th style="text-align:right">Year 3–5</th>
+              <th style="text-align:right">Advisory Assessment</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Gross Revenue</td>
+              <td class="num">13.83B</td>
+              <td class="num">17.40B</td>
+              <td class="num">17.40B</td>
+              <td class="num warn">Overstated ~25%</td>
+            </tr>
+            <tr>
+              <td>COGS (blended)</td>
+              <td class="num">~31%</td>
+              <td class="num">~30%</td>
+              <td class="num">~30%</td>
+              <td class="num ok">Reasonable</td>
+            </tr>
+            <tr>
+              <td>Labor</td>
+              <td class="num">3.80B (27%)</td>
+              <td class="num">3.80B</td>
+              <td class="num">3.80B</td>
+              <td class="num warn">Fixed — needs flex</td>
+            </tr>
+            <tr>
+              <td>EBITDA</td>
+              <td class="num">3.35B (24.2%)</td>
+              <td class="num">5.34B (30.7%)</td>
+              <td class="num">5.34B</td>
+              <td class="num warn">Margin plausible; quantum high</td>
+            </tr>
+            <tr>
+              <td>D&amp;A</td>
+              <td class="num">1.12B (7%)</td>
+              <td class="num">1.12B</td>
+              <td class="num">1.12B</td>
+              <td class="num ok">Appropriate</td>
+            </tr>
+            <tr>
+              <td>NPAT</td>
+              <td class="num">1.79B (12.9%)</td>
+              <td class="num">~3.5B</td>
+              <td class="num">~3.5B</td>
+              <td class="num warn">Achievable if revenue corrected</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 02: CRITICAL ISSUES ── -->
+  <section id="critical-issues">
+    <div class="section-header">
+      <span class="section-index">02</span>
+      <div class="section-title">
+        <h2>Critical Issues</h2>
+        <p>Three structural problems in the current model that require correction</p>
+      </div>
+    </div>
+
+    <!-- Issue 1 -->
+    <div class="issue-card">
+      <div class="issue-header">
+        <div class="issue-left">
+          <div class="issue-icon red">⚙</div>
+          <div class="issue-info">
+            <div class="issue-title">Occupancy &gt;100% — Seat-Turn Modeling Error</div>
+            <div class="issue-desc">The model reports 88.8% occupancy Y1 and 107.5% Y2–Y5, implying more guests than physical capacity. This is a modeling label error — the underlying driver is seat turns, not occupancy rate. The distinction matters critically for staffing, kitchen throughput, and realistic revenue caps.</div>
+          </div>
+        </div>
+        <span class="severity-badge critical">Critical</span>
+      </div>
+      <div class="issue-body">
+        <div class="issue-fact">
+          <span class="fact-label">As Modeled</span>
+          <span class="fact-value bad">107.5% "occupancy" Y2–Y5</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Likely Actual Driver</span>
+          <span class="fact-value ok">~1.07 seat turns/session</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Fri–Sat Input</span>
+          <span class="fact-value bad">125 seats on 100-seat venue</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Realistic Benchmark</span>
+          <span class="fact-value warn">1.5–2.0 turns for D1 bar/café</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Fix Required</span>
+          <span class="fact-value ok">Rebuild: Capacity × Turns × Avg Check</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Revenue Impact if Uncorrected</span>
+          <span class="fact-value bad">+18–25% overstatement on peak days</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Issue 2 -->
+    <div class="issue-card">
+      <div class="issue-header">
+        <div class="issue-left">
+          <div class="issue-icon amber">💸</div>
+          <div class="issue-info">
+            <div class="issue-title">Average Check 427K VND — 2–3× Competitor Benchmarks</div>
+            <div class="issue-desc">Modeled blended average check of 427K VND in Year 1 (rising to 445K by Y5) is significantly above comparable D1 multi-concept venues. Jackalope benchmarks at 180K–300K VND. Without explicit Sound Lab cover charges, event premiums, or premium F&amp;B menus, this figure requires rigorous justification.</div>
+          </div>
+        </div>
+        <span class="severity-badge high">High</span>
+      </div>
+      <div class="issue-body">
+        <div class="issue-fact">
+          <span class="fact-label">Modeled Weekday Avg</span>
+          <span class="fact-value bad">160K VND/seat</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Modeled Weekend Avg</span>
+          <span class="fact-value warn">700K VND/seat</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Jackalope (D1 Benchmark)</span>
+          <span class="fact-value ok">180K–300K VND</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Weekend Premium Viable?</span>
+          <span class="fact-value warn">Yes, with Sound Lab + events</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Recommended Stress Test</span>
+          <span class="fact-value ok">Model at 340K blended (20% haircut)</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Revenue Impact at 340K</span>
+          <span class="fact-value warn">−20% → 11.06B VND Y1</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Issue 3 -->
+    <div class="issue-card">
+      <div class="issue-header">
+        <div class="issue-left">
+          <div class="issue-icon blue">📉</div>
+          <div class="issue-info">
+            <div class="issue-title">Flat Revenue Y3–Y5 — No Growth Architecture</div>
+            <div class="issue-desc">The model holds revenue constant from Y3 through Y5 at approximately 17.4B VND. This creates an artificially low NPV, provides no sensitivity to pricing power or volume growth, and masks both upside potential and the risk of gradual revenue erosion from competitive entry or concept fatigue.</div>
+          </div>
+        </div>
+        <span class="severity-badge medium">Medium</span>
+      </div>
+      <div class="issue-body">
+        <div class="issue-fact">
+          <span class="fact-label">Y2–Y5 Revenue (Modeled)</span>
+          <span class="fact-value bad">17.40B flat</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">HCMC F&amp;B Inflation Rate</span>
+          <span class="fact-value ok">~5–7% p.a.</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Recommended Base Growth</span>
+          <span class="fact-value ok">5% p.a. Y3–Y5</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Y5 Revenue at 5% CAGR</span>
+          <span class="fact-value ok">~20.2B VND</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">EBITDA Upside (Y5)</span>
+          <span class="fact-value ok">+1.5–2.0B incremental</span>
+        </div>
+        <div class="issue-fact">
+          <span class="fact-label">Event Revenue Separation</span>
+          <span class="fact-value warn">Not modeled — should be broken out</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── SECTION 03: RECOMMENDATIONS ── -->
+  <section id="recommendations">
+    <div class="section-header">
+      <span class="section-index">03</span>
+      <div class="section-title">
+        <h2>Five Actionable Recommendations</h2>
+        <p>Specific, numbered actions with financial targets and implementation steps</p>
+      </div>
+    </div>
+
+    <!-- Rec 1 -->
+    <div class="rec-card">
+      <div class="rec-header">
+        <div class="rec-number">01</div>
+        <div class="rec-meta">
+          <div class="rec-title">Rebuild Revenue Model on Seat-Turn Framework</div>
+          <div class="rec-tagline">Replace occupancy % with daily covers = seats × turns × session fill rate</div>
+        </div>
+      </div>
+      <div class="rec-body">
+        <p>The root cause of the &gt;100% occupancy error is using a single "occupancy" multiplier instead of explicitly modeling seat turns per daypart. A properly structured model separates Lunch, Afternoon, Dinner, and Late Night sessions — each with its own fill rate and average check. This approach also makes staffing and COGS far more plannable.</p>
+        <div class="rec-numbers">
+          <div class="rec-num-item">
+            <div class="rec-num-label">Recommended Turns (Weekday)</div>
+            <div class="rec-num-value amber">1.4×</div>
+          </div>
+          <div class="rec-num-item">
+            <div class="rec-num-label">Recommended Turns (Weekend)</div>
+            <div class="rec-num-value green">2.0×</div>
+          </div>
+          <div class="rec-num-item">
+            <div class="rec-num-label">Implied Max Daily Revenue (Wknd)</div>
+            <div class="rec-num-value gold">70M VND</div>
+          </div>
+        </div>
+        <ul class="action-list">
+          <li>Restructure the revenue tab into: Sessions (Lunch/Arvo/Dinner/Late) × Days of Week × Seats × Fill % × Avg Check</li>
+          <li>Set weekday turns at 1.4× (café + afternoon traffic), weekend at 2.0× (dinner + Sound Lab sessions)</li>
+          <li>Apply a 6-month ramp: start at 60% of target turns in M1–M2, reaching 100% by M6</li>
+          <li>Build a sensitivity table: turns from 1.0× to 2.5× showing revenue and EBITDA impact</li>
+          <li>Recast Fri–Sat at 125 seats as "125 covers" = 100 seats × 1.25 turns, not 125 physical seats</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Rec 2 -->
+    <div class="rec-card">
+      <div class="rec-header">
+        <div class="rec-number">02</div>
+        <div class="rec-meta">
+          <div class="rec-title">Stress-Test and Defend the Average Check</div>
+          <div class="rec-tagline">Run three check scenarios; build a menu architecture that justifies the weekend 700K spend</div>
+        </div>
+      </div>
+      <div class="rec-body">
+        <p>The 427K blended average check is achievable only if weekend Sound Lab sessions carry a meaningful premium — either through cover charges, minimum spends, or curated F&amp;B packages. The weekday 160K check is actually below competitor benchmarks, suggesting the blended average is driven almost entirely by weekend performance. This creates extreme weekend dependency that needs explicit de-risking.</p>
+        <div class="rec-numbers">
+          <div class="rec-num-item">
+            <div class="rec-num-label">Conservative Blended Check</div>
+            <div class="rec-num-value red">340K VND</div>
+          </div>
+          <div class="rec-num-item">
+            <div class="rec-num-label">Base Case Check (Recommended)</div>
+            <div class="rec-num-value amber">390K VND</div>
+          </div>
+          <div class="rec-num-item">
+            <div class="rec-num-label">Optimistic (Sound Lab Premium)</div>
+            <div class="rec-num-value green">450K VND</div>
+          </div>
+        </div>
+        <ul class="action-list">
+          <li>Introduce a Sound Lab minimum spend of 200K–350K VND/person on Fri–Sat evenings — this directly supports the 700K check</li>
+          <li>Build a tiered menu: café items 80–150K, bar cocktails 150–280K, curated pairing menus 450–800K for Sound Lab bookings</li>
+          <li>Model three scenarios (340K / 390K / 450K blended) and present all three to investors — never present a single-point estimate</li>
+          <li>Track daily avg check from Day 1; if below 350K after M3, trigger a menu pricing review before M6</li>
+          <li>Benchmark monthly against Vietcetera Bar, Anan Saigon, and similar premium-casual D1 venues</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Rec 3 -->
+    <div class="rec-card">
+      <div class="rec-header">
+        <div class="rec-number">03</div>
+        <div class="rec-meta">
+          <div class="rec-title">Build a Dedicated Events &amp; Private Bookings Revenue Line</div>
+          <div class="rec-tagline">Sound Lab is a natural event venue — model it separately and price it aggressively</div>
+        </div>
+      </div>
+      <div class="rec-body">
+        <p>Private bookings and Sound Lab events are the highest-margin revenue category available to Cur8 — yet neither appears as a separate line in the current model. Events create guaranteed covers, reduce weather and foot-traffic risk, enable advance cash collection, and justify premium F&amp;B packages. At 2–4 events per month, this revenue stream alone could contribute 600M–1.2B VND annually.</p>
+        <div class="rec-numbers">
+          <div class="rec-num-item">
+            <div class="rec-num-label">Target Events/Month (Y1)</div>
+            <div class="rec-num-value amber">3–4</div>
+          </div>
+          <div class="rec-num-item">
+            <div class="rec-num-label">Event Revenue/Month (Est.)</div>
+            <div class="rec-num-value gold">60–90M VND</div>
+          </div>
+          <div class="rec-num-item">
+            <div class="rec-num-label">Annual Event Contribution</div>
+            <div class="rec-num-value green">720M–1.08B</div>
+          </div>
+        </div>
+        <ul class="action-list">
+          <li>Create a standalone "Events" P&amp;L with pricing tiers: Sound Lab Takeover (full venue, 25M flat fee + F&amp;B minimum 30M), Corporate Happy Hour (3 hr, 15M room fee + 250K/head package), Artist Residency (door split 70/30 in Cur8's favor)</li>
+          <li>Pre-sell 3 events before opening to validate demand and generate pre-opening cash flow</li>
+          <li>Add event revenue as its own model tab — track separately from walk-in revenue to measure true segment margins</li>
+          <li>Set a Fri–Sat private booking cap of 1 per week to protect walk-in revenue; reassess at M6</li>
+          <li>Allocate 0.5B VND of working capital buffer for event production costs (AV, décor, staff overtime)</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Rec 4 -->
+    <div class="rec-card">
+      <div class="rec-header">
+        <div class="rec-number">04</div>
+        <div class="rec-meta">
+          <div class="rec-title">Restructure Cash Flow for a 6-Month Ramp Period</div>
+          <div class="rec-tagline">Model the valley, not just the peak — working capital must cover the opening ramp explicitly</div>
+        </div>
+      </div>
+      <div class="rec-body">
+        <p>The current model does not appear to reflect a ramp-up period in monthly cash flows. New F&amp;B venues in D1 typically reach 70–80% of target covers only after M4–M6, as brand awareness builds and Google/social reviews accumulate. Operating at 40–50% occupancy for the first 60–90 days creates a cash consumption gap that must be funded from working capital — not assumed away.</p>
+        <div class="rec-numbers">
+          <div class="rec-num-item">
+            <div class="rec-num-label">M1–M2 Revenue Est. (50% ramp)</div>
+            <div class="rec-num-value red">~550M/month</div>
+          </div>
+          <div class="rec-num-item">
+            <div class="rec-num-label">Monthly Fixed Cash Burn</div>
+            <div class="rec-num-value amber">~380M/month</div>
+          </div>
+          <div class="rec-num-item">
+            <div class="rec-num-label">Minimum WC Buffer Required</div>
+            <div class="rec-num-value gold">600–800M VND</div>
+          </div>
+        </div>
+        <ul class="action-list">
+          <li>Build a month-by-month cash flow model for M1–M12 with explicit revenue ramp (M1: 40%, M2: 55%, M3: 70%, M4+: 90%, M6+: 100% of target)</li>
+          <li>Identify the cash trough month (likely M2–M3) and ensure working capital can cover it with a minimum 600M VND buffer</li>
+          <li>Negotiate deferred rent for M1–M2 with landlord — D1 vacancies give leverage; even a 50% deferral saves 75M VND/month during ramp</li>
+          <li>Stagger hiring: start with 60% of planned headcount at opening, full staffing by M3 to reduce early-stage labor burn</li>
+          <li>Pre-negotiate a 300M VND revolving credit facility with a local bank before opening — insurance, not expectation</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Rec 5 -->
+    <div class="rec-card">
+      <div class="rec-header">
+        <div class="rec-number">05</div>
+        <div class="rec-meta">
+          <div class="rec-title">Add Revenue Growth Architecture to Y3–Y5</div>
+          <div class="rec-tagline">5% annual growth assumption brings the model in line with D1 F&amp;B inflation and improves NPV by ~2.5B VND</div>
+        </div>
+      </div>
+      <div class="rec-body">
+        <p>Flat revenue from Y3 to Y5 is an overly conservative and mechanically odd assumption — it implies Cur8 neither raises prices nor grows covers over a 3-year period despite HCMC's consistent 5–7% F&amp;B inflation. Adding a modest 5% annual revenue growth from Y3 onward transforms the 5-year NPV picture materially and makes the model more credible to sophisticated investors who will question the flat projection.</p>
+        <div class="rec-numbers">
+          <div class="rec-num-item">
+            <div class="rec-num-label">Revenue Y5 (Flat)</div>
+            <div class="rec-num-value red">17.40B</div>
+          </div>
+          <div class="rec-num-item">
+            <div class="rec-num-label">Revenue Y5 at 5% CAGR</div>
+            <div class="rec-num-value green">20.20B</div>
+          </div>
+          <div class="rec-num-item">
+            <div class="rec-num-label">Additional 5-Yr Cumulative Rev</div>
+            <div class="rec-num-value gold">+8.1B VND</div>
+          </div>
+        </div>
+        <ul class="action-list">
+          <li>Rebuild Y3–Y5 with a 5% annual revenue growth driver — applied as a blended mix of 3% volume growth + 2% average check inflation</li>
+          <li>Model an "events growth" kicker separately: assume +1 event/quarter added each year from Y2 onward</li>
+          <li>Add a Sound Lab capacity expansion option at Y3 (e.g., second session slot or outdoor terrace) as a capital-light upside scenario</li>
+          <li>Include a payback sensitivity table: at current model (3.1 yrs), corrected base case (3.6 yrs), conservative (4.2 yrs)</li>
+          <li>Set a Year 2 revenue covenant trigger: if H1 Y2 annualized revenue falls below 14B, convene a strategic review</li>
+        </ul>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ── SECTION 04: SCENARIO ANALYSIS ── -->
+  <section id="scenarios">
+    <div class="section-header">
+      <span class="section-index">04</span>
+      <div class="section-title">
+        <h2>Scenario Analysis</h2>
+        <p>Three-way financial projection based on corrected seat-turn and average check assumptions</p>
+      </div>
+    </div>
+
+    <div class="callout amber">
+      <span class="callout-icon">ℹ</span>
+      <div class="callout-body">
+        <strong>Note on Base Case.</strong> The "Base Case" below reflects <em>corrected</em> assumptions (seat turns, realistic avg check, ramp period). It is intentionally more conservative than the original model. The "Optimistic" case approximates the original model's revenue level, but only if Sound Lab premiums and events achieve full traction.
+      </div>
+    </div>
+
+    <div class="scenario-grid">
+      <div class="sg-cell header">Metric</div>
+      <div class="sg-cell header conservative">Conservative</div>
+      <div class="sg-cell header base">Base Case</div>
+      <div class="sg-cell header optimistic">Optimistic</div>
+
+      <div class="sg-cell row-label">Avg Blended Check</div>
+      <div class="sg-cell conservative"><span class="sg-value">310K</span><div class="sg-sub">VND / cover</div></div>
+      <div class="sg-cell base"><span class="sg-value">390K</span><div class="sg-sub">VND / cover</div></div>
+      <div class="sg-cell optimistic"><span class="sg-value">450K</span><div class="sg-sub">VND / cover</div></div>
+
+      <div class="sg-cell row-label">Daily Covers (Y1 Avg)</div>
+      <div class="sg-cell conservative"><span class="sg-value">75</span><div class="sg-sub">covers/day</div></div>
+      <div class="sg-cell base"><span class="sg-value">88</span><div class="sg-sub">covers/day</div></div>
+      <div class="sg-cell optimistic"><span class="sg-value">105</span><div class="sg-sub">covers/day</div></div>
+
+      <div class="sg-cell row-label">Seat Turns (Peak Day)</div>
+      <div class="sg-cell conservative"><span class="sg-value">1.3×</span><div class="sg-sub">Fri–Sat</div></div>
+      <div class="sg-cell base"><span class="sg-value">1.7×</span><div class="sg-sub">Fri–Sat</div></div>
+      <div class="sg-cell optimistic"><span class="sg-value">2.0×</span><div class="sg-sub">Fri–Sat</div></div>
+
+      <div class="sg-cell row-label">Y1 Gross Revenue</div>
+      <div class="sg-cell conservative"><span class="sg-value">8.5B</span><div class="sg-sub">VND</div></div>
+      <div class="sg-cell base"><span class="sg-value">12.5B</span><div class="sg-sub">VND</div></div>
+      <div class="sg-cell optimistic"><span class="sg-value">17.1B</span><div class="sg-sub">VND</div></div>
+
+      <div class="sg-cell row-label">Y1 EBITDA</div>
+      <div class="sg-cell conservative"><span class="sg-value">1.1B</span><div class="sg-sub">13% margin</div></div>
+      <div class="sg-cell base"><span class="sg-value">2.8B</span><div class="sg-sub">22% margin</div></div>
+      <div class="sg-cell optimistic"><span class="sg-value">4.3B</span><div class="sg-sub">25% margin</div></div>
+
+      <div class="sg-cell row-label">Y2 Revenue (5% growth)</div>
+      <div class="sg-cell conservative"><span class="sg-value">9.0B</span><div class="sg-sub">VND</div></div>
+      <div class="sg-cell base"><span class="sg-value">14.2B</span><div class="sg-sub">VND</div></div>
+      <div class="sg-cell optimistic"><span class="sg-value">19.0B</span><div class="sg-sub">VND</div></div>
+
+      <div class="sg-cell row-label">Payback Period</div>
+      <div class="sg-cell conservative"><span class="sg-value">5.5 yrs</span><div class="sg-sub">borderline</div></div>
+      <div class="sg-cell base"><span class="sg-value">3.6 yrs</span><div class="sg-sub">acceptable</div></div>
+      <div class="sg-cell optimistic last-row"><span class="sg-value">2.4 yrs</span><div class="sg-sub">strong</div></div>
+
+      <div class="sg-cell row-label last-row">Break-Even (Monthly Rev)</div>
+      <div class="sg-cell conservative last-row"><span class="sg-value">~380M</span><div class="sg-sub">fixed cost floor</div></div>
+      <div class="sg-cell base last-row"><span class="sg-value">~380M</span><div class="sg-sub">fixed cost floor</div></div>
+      <div class="sg-cell optimistic last-row"><span class="sg-value">~380M</span><div class="sg-sub">fixed cost floor</div></div>
+    </div>
+
+    <div class="scenario-assumptions">
+      <div class="sa-card conservative">
+        <div class="sa-title">Conservative Assumptions</div>
+        <ul class="sa-items">
+          <li>6-month ramp to 75% occupancy</li>
+          <li>No Sound Lab cover charges until M4</li>
+          <li>Avg check 310K — café-led revenue mix</li>
+          <li>0 events in M1–M3; 1/month from M4</li>
+          <li>Weekend turns: 1.3× (single dinner service)</li>
+          <li>No revenue growth Y2–Y5</li>
+          <li>Full labor cost from Day 1</li>
+        </ul>
+      </div>
+      <div class="sa-card base">
+        <div class="sa-title">Base Case Assumptions</div>
+        <ul class="sa-items">
+          <li>Ramp: 60% M1 → 90% M4 → 100% M6</li>
+          <li>Sound Lab minimum spend 200K from M2</li>
+          <li>Avg check 390K — balanced café/bar mix</li>
+          <li>3 events/month from M3 onward</li>
+          <li>Weekend turns: 1.7× (dinner + late set)</li>
+          <li>5% annual revenue growth Y3–Y5</li>
+          <li>Staggered hiring — 80% staff at open</li>
+        </ul>
+      </div>
+      <div class="sa-card optimistic">
+        <div class="sa-title">Optimistic Assumptions</div>
+        <ul class="sa-items">
+          <li>Strong pre-opening buzz; 85% M1</li>
+          <li>Sound Lab minimum spend 350K from M1</li>
+          <li>Avg check 450K — Sound Lab-led premium</li>
+          <li>4+ events/month from M2 onward</li>
+          <li>Weekend turns: 2.0× (double session)</li>
+          <li>8% annual revenue growth Y3–Y5</li>
+          <li>Events waitlist by M6 — pricing power</li>
+        </ul>
+      </div>
+    </div>
+
+    <div style="margin-top: 24px;">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--gold)"></span>Payback &amp; Ramp Timeline</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-month">Pre-Open / M0</div>
+            <div class="tl-event">Capital Deploy</div>
+            <div class="tl-detail">5.59B VND invested; fit-out, equipment, pre-opening costs settled</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-month">M1 – M2</div>
+            <div class="tl-event">Ramp Phase</div>
+            <div class="tl-detail">40–55% of target covers; cash burn ~60–80M/month net; WC buffer deploys</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-month">M3 – M5</div>
+            <div class="tl-event">Growth Phase</div>
+            <div class="tl-detail">70–90% covers; events launch; first positive operating cash flow expected M4</div>
+          </div>
+          <div class="tl-item highlight">
+            <div class="tl-month">M6</div>
+            <div class="tl-event">Steady State</div>
+            <div class="tl-detail">100% target occupancy; Sound Lab fully programmed; EBITDA margin stabilizing at 20–24%</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-month">Y2 H1</div>
+            <div class="tl-event">Covenant Check</div>
+            <div class="tl-detail">Annualized revenue vs 14B VND trigger; pricing review if below threshold</div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-month">Y3 – Y4</div>
+            <div class="tl-event">Investment Recovery</div>
+            <div class="tl-detail">Base case full payback ~Y3.6; expansion optionality assessed (2nd session, terrace)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 05: RISK MITIGATION ── -->
+  <section id="risk">
+    <div class="section-header">
+      <span class="section-index">05</span>
+      <div class="section-title">
+        <h2>Risk Mitigation Strategies</h2>
+        <p>Operational, financial, and market risks with specific mitigation actions</p>
+      </div>
+    </div>
+
+    <div class="risk-grid">
+
+      <div class="risk-card">
+        <div class="risk-top">
+          <div class="risk-name">Revenue Concentration Risk</div>
+          <span class="risk-pill high">High</span>
+        </div>
+        <p class="risk-desc">Fri–Sat evenings account for an estimated 55–60% of total weekly revenue in the current model. A single weekend of poor weather, road closures (D1 events), or a competing launch could deliver a 15–20% monthly revenue shortfall.</p>
+        <div class="risk-mitigation">
+          <strong>Mitigation:</strong> Build weekday revenue to ≥40% of weekly total through café programming, corporate lunch packages (150K/head, minimum 10 pax), and weekday happy hours (4–7pm, 2-for-1 cocktails). Target: no single day &gt;25% of weekly revenue by M6.
+        </div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-top">
+          <div class="risk-name">Average Check Disappointment</div>
+          <span class="risk-pill high">High</span>
+        </div>
+        <p class="risk-desc">If Sound Lab programming fails to attract a premium-spending audience and guests treat Cur8 as a standard café-bar, the blended average check could settle at 250–300K VND rather than 390–450K — a 15–30% revenue miss that would extend payback to 4.5–5 years.</p>
+        <div class="risk-mitigation">
+          <strong>Mitigation:</strong> Institute a 200K minimum spend per seat from opening night on Fri–Sat. Track average check weekly. If M2 average check is below 320K, implement a curated pairing menu at 380K+ before M3. Do not wait for M6 to respond.
+        </div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-top">
+          <div class="risk-name">Labor Cost Escalation</div>
+          <span class="risk-pill medium">Medium</span>
+        </div>
+        <p class="risk-desc">Labor is modeled as a fixed 3.8B VND/year (27% of revenue). If revenue ramps slowly in M1–M3 while headcount is at full strength, labor as a % of revenue could spike to 35–40% during the ramp period, eroding the working capital buffer faster than projected.</p>
+        <div class="risk-mitigation">
+          <strong>Mitigation:</strong> Stagger hiring to 70% of target headcount at open. Use part-time and event-contract staff for Sound Lab nights rather than permanent hires. Full permanent roster reached at M3 only if revenue has exceeded 900M/month run-rate.
+        </div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-top">
+          <div class="risk-name">Competitive Entry</div>
+          <span class="risk-pill medium">Medium</span>
+        </div>
+        <p class="risk-desc">The multi-concept café-bar-experience model in D1 is not defensible by location alone. Competitors with deeper pockets (Vietcetera Group, The Moc Corporation) could replicate the Sound Lab concept within 12–18 months of Cur8 demonstrating demand.</p>
+        <div class="risk-mitigation">
+          <strong>Mitigation:</strong> Establish exclusive artist residencies and a Sound Lab curator identity within M1–M6 — brand the programming, not just the space. File a trademark on "Cur8 Sound Lab" or equivalent by opening. Community loyalty programs with prepaid monthly credits reduce churn if competitors enter.
+        </div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-top">
+          <div class="risk-name">Working Capital Shortfall</div>
+          <span class="risk-pill high">High</span>
+        </div>
+        <p class="risk-desc">If ramp-up extends beyond M4 (e.g., delayed permit, construction overrun, soft launch reception), the cash trough deepens. A 2-month delay in reaching breakeven burns an additional 150–200M VND from the working capital reserve, potentially requiring emergency equity injection.</p>
+        <div class="risk-mitigation">
+          <strong>Mitigation:</strong> Maintain a minimum 600M VND undrawn WC reserve throughout Y1. Pre-sell a "Founding Member" package (5M VND prepaid credit at 20% bonus value) targeting 100 founding members = 500M VND pre-opening cash. This also validates demand before opening.
+        </div>
+      </div>
+
+      <div class="risk-card">
+        <div class="risk-top">
+          <div class="risk-name">Lease &amp; Renewal Risk</div>
+          <span class="risk-pill medium">Medium</span>
+        </div>
+        <p class="risk-desc">At 75M VND/month (900M/year), rent is currently 6.5% of modeled Y1 revenue — favorable. However, at lease renewal (typically 3–5 year cycles), D1 rents have historically increased 20–40%. A 30% rent increase at Y4 adds 270M VND/year to the fixed cost base, reducing EBITDA by ~1.5 percentage points.</p>
+        <div class="risk-mitigation">
+          <strong>Mitigation:</strong> Negotiate a 5-year lease with a maximum annual escalation cap of 8% written into the contract. If landlord insists on market-rate renewal, ensure the break clause allows exit at Y3 with 90 days notice. Factor worst-case rent (+30%) into the conservative scenario model.
+        </div>
+      </div>
+
+    </div>
+
+    <div style="margin-top: 24px;">
+      <div class="card">
+        <div class="card-title"><span class="dot" style="background:var(--gold)"></span>Key Performance Tripwires — Recommended Management Triggers</div>
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Trigger Metric</th>
+              <th>Watch Level</th>
+              <th>Action Level</th>
+              <th>Required Response</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Monthly Revenue (M1–M3)</td>
+              <td class="num warn">&lt; 900M VND</td>
+              <td class="num bad">&lt; 700M VND</td>
+              <td>Review menu pricing; add happy hour program; increase event sales push</td>
+            </tr>
+            <tr>
+              <td>Average Check (Daily)</td>
+              <td class="num warn">&lt; 350K VND</td>
+              <td class="num bad">&lt; 280K VND</td>
+              <td>Implement minimum spend; launch curated pairing menu; review bar menu mix</td>
+            </tr>
+            <tr>
+              <td>Weekend Seat Turns</td>
+              <td class="num warn">&lt; 1.4×</td>
+              <td class="num bad">&lt; 1.1×</td>
+              <td>Introduce early-bird discount to drive first turn; adjust Sound Lab start time</td>
+            </tr>
+            <tr>
+              <td>Events Booked (Monthly)</td>
+              <td class="num warn">&lt; 2 events</td>
+              <td class="num bad">&lt; 1 event</td>
+              <td>Activate corporate sales; offer 10% discount on first 3 bookings; partner with event agencies</td>
+            </tr>
+            <tr>
+              <td>Working Capital Reserve</td>
+              <td class="num warn">&lt; 400M VND</td>
+              <td class="num bad">&lt; 200M VND</td>
+              <td>Draw revolving credit facility; defer discretionary capex; escalate to board immediately</td>
+            </tr>
+            <tr>
+              <td>Labor % of Revenue</td>
+              <td class="num warn">&gt; 32%</td>
+              <td class="num bad">&gt; 38%</td>
+              <td>Freeze non-essential hires; shift to part-time model for non-peak shifts</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div style="margin-top: 28px; padding: 24px; background: var(--bg-card); border: 1px solid var(--border-accent); border-radius: var(--radius-lg);">
+      <div style="display: flex; gap: 16px; align-items: flex-start;">
+        <div style="width: 36px; height: 36px; background: var(--gold-dim); border: 1px solid var(--border-accent); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;">✦</div>
+        <div>
+          <div style="font-size: 13px; font-weight: 700; color: var(--gold); letter-spacing: 0.04em; margin-bottom: 8px; text-transform: uppercase;">Advisory Closing Note</div>
+          <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.75; margin-bottom: 10px;">
+            Cur8 has the fundamentals of a strong D1 multi-concept venue. The location, investment scale, and concept architecture are all commercially sound. The financial model, however, requires a rebuild before it can be used to make capital allocation decisions or presented to sophisticated investors.
+          </p>
+          <p style="font-size: 13.5px; color: var(--text-secondary); line-height: 1.75;">
+            The three non-negotiable fixes are: <strong style="color: var(--text-primary)">(1) rebuild revenue on a seat-turn framework</strong>, <strong style="color: var(--text-primary)">(2) stress-test the average check at 340K and 390K scenarios</strong>, and <strong style="color: var(--text-primary)">(3) add a month-by-month cash flow model through M12</strong>. Once corrected, our base case supports a <em style="color: var(--gold)">Conditional Go</em> recommendation with a 3.4–3.8 year payback — a solid outcome for a first venue in one of HCMC's most competitive districts.
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span><span class="footer-logo">Cur8</span> &nbsp;Financial Advisory Memorandum</span>
+  <span>Prepared: 19 April 2026 &nbsp;·&nbsp; Confidential — For Internal Use Only</span>
+  <span>49 Phó Đức Chính, D1, HCMC</span>
+</footer>
+
+<script>
+  // Active nav link on scroll
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('nav a');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => link.classList.remove('active'));
+        const active = document.querySelector(`nav a[href="#${entry.target.id}"]`);
+        if (active) active.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(section => observer.observe(section));
+</script>
+
+</body>
+</html>
