@@ -29,6 +29,7 @@ Files are organized by project stage.
 | 02 | [Revenue Diversification](./03_operations/reports/02_revenue_diversification.html) | 4-channel growth plan: F&B, Event, Retail, B2B |
 | 03 | [Daypart Simulation](./03_operations/reports/03_daypart_simulation.html) | Revenue modeling by time slot |
 | 04 | [HR Ramp-up Strategy](./03_operations/reports/04_hr_rampup_strategy.html) | Phased hiring plan: easy→hard, process optimization |
+| 05 | [Behavioural Code & Training](./03_operations/reports/06_behavioural_code.html) | Customer rules by time slot + 7-module staff training programme |
 
 ## Key Numbers
 - **Investment:** 4.06B VND
